@@ -7,23 +7,28 @@ Hair::Hair()
 
 void Hair::update(QVector<Sphere> &sphereBox, float damping, float dt)
 {
-    for(int i=0;i<nodeBox.size();i++)
+    return;
+
+    for(int i=0; i<nodeBox.size(); i++)
     {
         QVector3D a=calNodeForce(i)/nodeBox[i].mass;
         QVector3D p2=verlet(i,damping,dt,a);
 
         nodeBox[i].p0=nodeBox[i].p1;
         nodeBox[i].p1=p2;
+
+        //update draw box
+        drawNodeBox[i]=p2;
     }
 
     int iterationCount=10;
-    for(int i=0;i<strandBox.size();i++)
+    for(int i=0; i<strandBox.size(); i++)
     {
         iterationCount--;
         while(iterationCount>0)
         {
             HairStrand strand=strandBox[i];
-            for(int index=strand.nodeStart;index<strand.nodeEnd-1;index++)
+            for(int index=strand.nodeStart; index<strand.nodeEnd-1; index++)
             {
                 auto na=nodeBox[index];
                 auto nb=nodeBox[index+1];
@@ -40,6 +45,42 @@ void Hair::update(QVector<Sphere> &sphereBox, float damping, float dt)
         }
     }
 
+}
+
+void Hair::init(QVector<QVector3D> &rootPosBox)
+{
+    //生成头发节点
+    for(int i=0; i<rootPosBox.size(); i++)
+    {
+        HairStrand strand;
+
+        strand.rootPos=rootPosBox[i];
+        strand.nodeStart=nodeBox.size();
+
+        int nodeCount=10;
+        auto tempPos=rootPosBox[i];
+        while(nodeCount-->0)
+        {
+            HairNode node;
+            node.length=0.1;
+            node.mass=10;
+
+            tempPos.setY(tempPos.y()+0.1);
+            node.p0=tempPos;
+            node.p1=tempPos;
+            nodeBox.push_back(node);
+            drawNodeBox.push_back(tempPos);
+        }
+
+        strand.nodeEnd=nodeBox.size();
+        strandBox.push_back(strand);
+    }
+
+    //生成头发节点索引
+    for(int i=0;i<nodeBox.size();i++)
+    {
+        nodeIndex.append(i);
+    }
 }
 
 QVector3D Hair::calNodeForce(int nodeIndex)

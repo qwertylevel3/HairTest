@@ -13,6 +13,7 @@ public:
     void draw(QOpenGLShaderProgram &shaderProgram);
 protected:
     Hair hair;
+
 };
 
 #endif // SCALP_H

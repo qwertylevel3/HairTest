@@ -26,10 +26,11 @@ void OpenGLScene::timerEvent(QTimerEvent *e)
 
 bool OpenGLScene::initializeModel()
 {
-//    Model* model=new Model();
-//    model->load(QString("model/hairRoot1.obj"));
-//    model->init();
-//    modelBox.append(model);
+    Model* model=new Model();
+    model->load(QString("model/hairRoot1.obj"));
+    model->init();
+    modelBox.append(model);
+
 
     Model* scalp=new Scalp();
     scalp->load(QString("model/hairRoot1.obj"));

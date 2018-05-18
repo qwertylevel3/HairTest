@@ -8,17 +8,33 @@ Scalp::Scalp()
 
 bool Scalp::init()
 {
+//    arrayBuf.create();
+//    arrayBuf.bind();
+//    arrayBuf.allocate(getPointsData(), countPoints() * sizeof(QVector3D));
+//
+//    indexBuf.create();
+//    indexBuf.bind();
+//    indexBuf.allocate(getIndicesData(), countIndices()* sizeof(GLuint));
+//
+//    normalBuf.create();
+//    normalBuf.bind();
+//    normalBuf.allocate(getNormalsData(),countNormals()*sizeof(QVector3D));
+
+    hair.init(points);
+
     arrayBuf.create();
     arrayBuf.bind();
-    arrayBuf.allocate(getPointsData(), countPoints() * sizeof(QVector3D));
+    arrayBuf.allocate(hair.getDrawNodeData(),hair.countNode()*sizeof(QVector3D));
 
     indexBuf.create();
     indexBuf.bind();
-    indexBuf.allocate(getIndicesData(), countIndices()* sizeof(GLuint));
+    indexBuf.allocate(hair.getNodeIndexData(),hair.countIndex()*sizeof(GLuint));
 
+    //TODO
+    //头发每个点的法向量
     normalBuf.create();
     normalBuf.bind();
-    normalBuf.allocate(getNormalsData(),countNormals()*sizeof(QVector3D));
+    normalBuf.allocate(hair.getDrawNodeData(),hair.countNode()*sizeof(QVector3D));
 
     return true;
 }
@@ -47,7 +63,7 @@ void Scalp::draw(QOpenGLShaderProgram &shaderProgram)
     //    program.setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
     //glDrawElements(GL_POINTS, model->indexs(), GL_UNSIGNED_INT, 0);
-    glDrawElements(GL_TRIANGLES, countIndices(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_LINES, countIndices(), GL_UNSIGNED_INT, 0);
     //    glDrawElements(GL_LINES, model->m_edgeIndices.size(), GL_UNSIGNED_INT, model->m_edgeIndices.data());
 
     //    glDrawElements(GL_LINES, model->m_edgeIndices.size(), GL_UNSIGNED_INT, model->m_edgeIndices.data());
