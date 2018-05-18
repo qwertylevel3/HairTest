@@ -1,4 +1,5 @@
 #include "openglscene.h"
+#include "scalp.h"
 
 
 OpenGLScene::OpenGLScene(QWidget *parent)
@@ -25,10 +26,15 @@ void OpenGLScene::timerEvent(QTimerEvent *e)
 
 bool OpenGLScene::initializeModel()
 {
-    Model* model=new Model();
-    model->load(QString("model/hairRoot1.obj"));
-    model->initBuf();
-    modelBox.append(model);
+//    Model* model=new Model();
+//    model->load(QString("model/hairRoot1.obj"));
+//    model->init();
+//    modelBox.append(model);
+
+    Model* scalp=new Scalp();
+    scalp->load(QString("model/hairRoot1.obj"));
+    scalp->init();
+    modelBox.append(scalp);
 
     return true;
 }
@@ -59,7 +65,7 @@ void OpenGLScene::initializeGL()
 
     initializeModel();
     initShaders();
-    initTextures();
+//    initTextures();
 
     mvMatrix.translate(0.0, 0.0, -5.0);
 
@@ -167,8 +173,8 @@ void OpenGLScene::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //绑定纹理
-    texture->bind();
-    program.setUniformValue("texture", 0);
+//    texture->bind();
+//    program.setUniformValue("texture", 0);
 
 
     QMatrix3x3 tempMatrix=normalMatrix.toGenericMatrix< 3,3 >();

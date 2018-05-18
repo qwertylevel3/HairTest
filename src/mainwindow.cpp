@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-        scene=new OpenGLScene(this);
+    scene=new OpenGLScene(this);
 
 
 

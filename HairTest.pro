@@ -19,7 +19,10 @@ SOURCES += src/main.cpp \
     src/hair/hairstrand.cpp \
     src/mainwindow.cpp \
     src/model.cpp \
-    src/openglscene.cpp
+    src/openglscene.cpp \
+    src/hair/hair.cpp \
+    src/sphere.cpp \
+    src/hair/scalp.cpp
 
 HEADERS  += \
     src/hair/hairnode.h \
@@ -27,9 +30,11 @@ HEADERS  += \
     src/mainwindow.h \
     src/model.h \
     src/openglscene.h \
-    src/point3d.h \
     src/stable.h \
-    src/ui_mainwindow.h
+    src/ui_mainwindow.h \
+    src/hair/hair.h \
+    src/sphere.h \
+    src/hair/scalp.h
 
 FORMS += \
     src/mainwindow.ui

@@ -12,12 +12,7 @@ QT_END_NAMESPACE
 
 
 
-//顶点数据
-struct VertexData
-{
-    QVector3D pos;
-    QVector2D tex;
-};
+
 
 class OpenGLScene : public QOpenGLWidget, protected QOpenGLFunctions
 {

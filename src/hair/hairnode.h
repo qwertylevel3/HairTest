@@ -11,6 +11,9 @@ struct HairNode
 
     //和上一节点止动长度
     float length;
+
+    //质量
+    float mass;
 };
 
 #endif // HAIRNODE_H

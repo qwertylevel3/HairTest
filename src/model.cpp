@@ -13,8 +13,8 @@ bool Model::load(const QString &filePath)
     }
 
 
-    Point3d boundsMin( 1e9, 1e9, 1e9);
-    Point3d boundsMax(-1e9,-1e9,-1e9);
+    QVector3D boundsMin( 1e9, 1e9, 1e9);
+    QVector3D boundsMax(-1e9,-1e9,-1e9);
 
     QTextStream in(&file);
     while (!in.atEnd()) {
@@ -26,7 +26,7 @@ bool Model::load(const QString &filePath)
         QString id;
         ts >> id;
         if (id == "v") {
-            Point3d p;
+            QVector3D p;
             for (int i = 0; i < 3; ++i) {
                 ts >> p[i];
                 boundsMin[i] = qMin(boundsMin[i], p[i]);
@@ -60,33 +60,33 @@ bool Model::load(const QString &filePath)
                     pointIndices << p[(i + 2) % 4];
         }
     }
-    const Point3d bounds = boundsMax - boundsMin;
-    const qreal scale = 1 / qMax(bounds.x, qMax(bounds.y, bounds.z));
+    const QVector3D bounds = boundsMax - boundsMin;
+    const qreal scale = 1 / qMax(bounds.x(), qMax(bounds.y(), bounds.z()));
     for (int i = 0; i < points.size(); ++i)
         points[i] = (points[i]-(boundsMin + bounds*0.5))*scale;
 
     normals.resize(points.size());
     for (int i = 0; i < pointIndices.size(); i += 3) {
-        const Point3d a = points.at(pointIndices.at(i));
-        const Point3d b = points.at(pointIndices.at(i+1));
-        const Point3d c = points.at(pointIndices.at(i+2));
-        const Point3d normal = cross(b-a,c-a).normalize();
+        const QVector3D a = points.at(pointIndices.at(i));
+        const QVector3D b = points.at(pointIndices.at(i+1));
+        const QVector3D c = points.at(pointIndices.at(i+2));
+        const QVector3D normal = QVector3D::crossProduct(b-a,c-a).normalized();
 
         for (int j = 0; j < 3; ++j)
             normals[pointIndices.at(i + j)] += normal;
     }
 
     for (int i = 0; i < normals.size(); ++i)
-        normals[i] = normals[i].normalize();
+        normals[i] = normals[i].normalized();
 
     return true;
 }
 
-bool Model::initBuf()
+bool Model::init()
 {
     arrayBuf.create();
     arrayBuf.bind();
-    arrayBuf.allocate(getPointsData(), countPoints() * sizeof(Point3d));
+    arrayBuf.allocate(getPointsData(), countPoints() * sizeof(QVector3D));
 
     indexBuf.create();
     indexBuf.bind();
@@ -94,7 +94,7 @@ bool Model::initBuf()
 
     normalBuf.create();
     normalBuf.bind();
-    normalBuf.allocate(getNormalsData(),countNormals()*sizeof(Point3d));
+    normalBuf.allocate(getNormalsData(),countNormals()*sizeof(QVector3D));
 
     return true;
 }
@@ -105,7 +105,7 @@ void Model::draw(QOpenGLShaderProgram& shaderProgram)
 
     int normalLocation=shaderProgram.attributeLocation("vNormal");
     shaderProgram.enableAttributeArray(normalLocation);
-    shaderProgram.setAttributeBuffer(normalLocation,GL_FLOAT,0,3,sizeof(Point3d));
+    shaderProgram.setAttributeBuffer(normalLocation,GL_FLOAT,0,3,sizeof(QVector3D));
 
     arrayBuf.bind();
     indexBuf.bind();
@@ -114,7 +114,7 @@ void Model::draw(QOpenGLShaderProgram& shaderProgram)
 
     int vertexLocation = shaderProgram.attributeLocation("vVertex");
     shaderProgram.enableAttributeArray(vertexLocation);
-    shaderProgram.setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(Point3d));
+    shaderProgram.setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(QVector3D));
 
     //    offset += sizeof(QVector3D);
     //

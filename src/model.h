@@ -4,15 +4,13 @@
 
 #include"stable.h"
 
-#include "point3d.h"
-
 class Model:public QOpenGLFunctions
 {
 public:
     Model();
     ~Model();
     bool load(const QString &filePath);
-    bool initBuf();
+    virtual bool init();
     virtual void draw(QOpenGLShaderProgram &shaderProgram);
 
     QString fileName() const { return m_fileName; }
@@ -30,8 +28,8 @@ public:
 protected:
 
     QString m_fileName;//文件名
-    QVector<Point3d> points;//顶点信息
-    QVector<Point3d> normals;//向量信息
+    QVector<QVector3D> points;//顶点信息
+    QVector<QVector3D> normals;//向量信息
     QVector<GLuint> edgeIndices;//边索引
     QVector<GLuint> pointIndices;//点索引
 
