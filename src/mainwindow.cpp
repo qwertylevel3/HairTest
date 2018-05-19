@@ -37,9 +37,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->specularBSlider,SIGNAL(valueChanged(int)),this,SLOT(changeSpecularColor()));
     connect(ui->specularASlider,SIGNAL(valueChanged(int)),this,SLOT(changeSpecularColor()));
 
-    connect(ui->lightPosXSpinBox,SIGNAL(valueChanged(double)),this,SLOT(changeLightPos()));
-    connect(ui->lightPosYSpinBox,SIGNAL(valueChanged(double)),this,SLOT(changeLightPos()));
-    connect(ui->lightPosZSpinBox,SIGNAL(valueChanged(double)),this,SLOT(changeLightPos()));
+    connect(ui->lightXSlider,SIGNAL(valueChanged(int)),this,SLOT(changeLightPos()));
+    connect(ui->lightYSlider,SIGNAL(valueChanged(int)),this,SLOT(changeLightPos()));
+    connect(ui->lightZSlider,SIGNAL(valueChanged(int)),this,SLOT(changeLightPos()));
+
+    connect(ui->windXSlider,SIGNAL(valueChanged(int)),this,SLOT(changeWind()));
+    connect(ui->windYSlider,SIGNAL(valueChanged(int)),this,SLOT(changeWind()));
+    connect(ui->windZSlider,SIGNAL(valueChanged(int)),this,SLOT(changeWind()));
+
 }
 
 MainWindow::~MainWindow()
@@ -65,6 +70,11 @@ void MainWindow::changeSpecularColor()
 void MainWindow::changeLightPos()
 {
     scene->setLightPos(this->getLightPos());
+}
+
+void MainWindow::changeWind()
+{
+    scene->setWind(this->getWind());
 }
 
 QVector4D MainWindow::getAmbiendColor()
@@ -115,9 +125,19 @@ QVector4D MainWindow::getSpecularColor()
 
 QVector3D MainWindow::getLightPos()
 {
-    float x=ui->lightPosXSpinBox->value();
-    float y=ui->lightPosYSpinBox->value();
-    float z=ui->lightPosZSpinBox->value();
+    float x=float(ui->lightXSlider->value())/25.0;
+    float y=float(ui->lightYSlider->value())/25.0;
+    float z=float(ui->lightZSlider->value())/25.0;
 
     return QVector3D(x,y,z);
+}
+
+QVector4D MainWindow::getWind()
+{
+    float x=float(ui->windXSlider->value())/255.0;
+    float y=float(ui->windYSlider->value())/255.0;
+    float z=float(ui->windZSlider->value())/255.0;
+    float w=float(ui->intensitySlider->value());
+
+    return QVector4D(x,y,z,w);
 }

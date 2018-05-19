@@ -6,24 +6,39 @@
 #include"hairnode.h"
 #include"hairstrand.h"
 #include"sphere.h"
+#include"env.h"
 
 
 class Hair
 {
 public:
     Hair();
-    void update(QVector<Sphere>& sphereBox,float damping,float dt);
+    //TODO
+    //节点更新放入vshader，GPU并行
+    virtual void update(Env& env,float dt);
 
     //根据发根位置初始化发丝
     void init(QVector<QVector3D>& rootPosBox);
 
-    void* getDrawNodeData(){return &drawNodeBox[0];}
-    int countNode(){return nodeBox.size();}
+    void* getDrawNodeData()
+    {
+        return &drawNodeBox[0];
+    }
+    int countNode()
+    {
+        return nodeBox.size();
+    }
 
-    void *getNodeIndexData(){return &nodeIndex[0];}
-    int countIndex(){return nodeIndex.size();}
+    void *getNodeIndexData()
+    {
+        return &nodeIndex[0];
+    }
+    int countIndex()
+    {
+        return nodeIndex.size();
+    }
 protected:
-    QVector3D calNodeForce(int nodeIndex);
+    QVector3D calNodeForce(Env& env,int nodeIndex);
     //verlet
     QVector3D verlet(int nodeIndex, float damping, float dt, QVector3D a);
 

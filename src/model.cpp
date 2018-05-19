@@ -130,7 +130,7 @@ void Model::draw(QOpenGLShaderProgram& shaderProgram)
 
 }
 
-void Model::update(QVector<Sphere> &sphereBox, float damping, float dt)
+void Model::update(Env &env, float dt)
 {
 
 }

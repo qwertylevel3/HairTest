@@ -5,7 +5,7 @@ Hair::Hair()
 
 }
 
-void Hair::update(QVector<Sphere> &sphereBox, float damping, float dt)
+void Hair::update(Env &env, float dt)
 {
     for(int i=0; i<strandBox.size(); i++)
     {
@@ -13,9 +13,9 @@ void Hair::update(QVector<Sphere> &sphereBox, float damping, float dt)
         for(int index=strand.nodeStart+1; index<strand.nodeEnd; index++)
         {
             //计算加速度
-            QVector3D a=calNodeForce(index)/nodeBox[index].mass;
+            QVector3D a=calNodeForce(env,index)/nodeBox[index].mass;
             //计算verlet积分,求出新位置
-            QVector3D p2=verlet(index,damping,dt,a);
+            QVector3D p2=verlet(index,env.damping,dt,a);
 
             nodeBox[index].p0=nodeBox[index].p1;
             nodeBox[index].p1=p2;
@@ -40,7 +40,7 @@ void Hair::update(QVector<Sphere> &sphereBox, float damping, float dt)
                 auto nb=nodeBox[index];
 
                 //碰撞检测
-                nb.p1=collideSphere(sphereBox,nb.p1);
+                nb.p1=collideSphere(env.sphereBox,nb.p1);
 
                 //长度约束
                 nb.p1=lengthConstraint(na.p1,nb.p1,nb.length);
@@ -51,6 +51,7 @@ void Hair::update(QVector<Sphere> &sphereBox, float damping, float dt)
             strand.rootPos=transform(strand.rootPos);
         }
     }
+
 }
 
 void Hair::init(QVector<QVector3D> &rootPosBox)
@@ -100,12 +101,23 @@ void Hair::init(QVector<QVector3D> &rootPosBox)
     }
 }
 
-QVector3D Hair::calNodeForce(int nodeIndex)
+QVector3D Hair::calNodeForce(Env &env, int nodeIndex)
 {
-    //求出每个节点的合力
-    //暂时仅仅是返回重力
+    QVector3D vec;
+    //全局风
+    //xyz为方向，w为强度
+    QVector4D wind=env.wind;
+    wind.setX(wind.x()*wind.w());
+    wind.setY(wind.y()*wind.w());
+    wind.setZ(wind.z()*wind.w());
+
+    vec.setX(wind.x());
+    vec.setY(wind.y());
+    vec.setZ(wind.z());
+
     float gravity=nodeBox[nodeIndex].mass*9.8;
-    return QVector3D(0,-gravity,0);
+    vec+= QVector3D(0,-gravity,0);
+    return vec;
 }
 
 QVector3D Hair::verlet(int nodeIndex, float damping, float dt, QVector3D a)

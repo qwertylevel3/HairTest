@@ -70,11 +70,12 @@ void Scalp::draw(QOpenGLShaderProgram &shaderProgram)
 
 }
 
-void Scalp::update(QVector<Sphere> &sphereBox, float damping, float dt)
+void Scalp::update(Env &env, float dt)
 {
-    hair.update(sphereBox,damping,dt);
+    hair.update(env,dt);
     updateBuf();
 }
+
 
 void Scalp::updateBuf()
 {

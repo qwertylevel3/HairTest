@@ -11,6 +11,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = HairTest
 TEMPLATE = app
 
+UI_DIR= ui
+
 PRECOMPILED_HEADER = src/stable.h
 
 
@@ -22,7 +24,8 @@ SOURCES += src/main.cpp \
     src/openglscene.cpp \
     src/hair/hair.cpp \
     src/sphere.cpp \
-    src/hair/scalp.cpp
+    src/hair/scalp.cpp \
+    src/env.cpp
 
 HEADERS  += \
     src/hair/hairnode.h \
@@ -31,16 +34,17 @@ HEADERS  += \
     src/model.h \
     src/openglscene.h \
     src/stable.h \
-    src/ui_mainwindow.h \
     src/hair/hair.h \
     src/sphere.h \
-    src/hair/scalp.h
+    src/hair/scalp.h \
+    src/env.h
 
 FORMS += \
-    src/mainwindow.ui
+    ui/mainwindow.ui
 
 INCLUDEPATH += $$PWD\src\
 INCLUDEPATH += $$PWD\src\hair\
+INCLUDEPATH += $$PWD\ui\
 
 DISTFILES += \
     shader/fshader.glsl \

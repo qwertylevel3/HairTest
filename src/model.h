@@ -4,6 +4,7 @@
 
 #include"stable.h"
 #include"sphere.h"
+#include"env.h"
 
 class Model:public QOpenGLFunctions
 {
@@ -13,7 +14,7 @@ public:
     bool load(const QString &filePath);
     virtual bool init();
     virtual void draw(QOpenGLShaderProgram &shaderProgram);
-    virtual void update(QVector<Sphere>& sphereBox,float damping,float dt);
+    virtual void update(Env& env,float dt);
 
     QString fileName() const { return m_fileName; }
     GLuint countFaces() const { return pointIndices.size() / 3; }

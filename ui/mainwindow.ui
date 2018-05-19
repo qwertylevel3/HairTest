@@ -6,22 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>903</width>
-    <height>625</height>
+    <width>996</width>
+    <height>675</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout"/>
-  </widget>
+  <widget class="QWidget" name="centralwidget"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>903</width>
+     <width>996</width>
      <height>23</height>
     </rect>
    </property>
@@ -35,6 +33,12 @@
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
       <widget class="QGroupBox" name="ambientGroupBox">
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="title">
         <string>ambient</string>
        </property>
@@ -158,6 +162,12 @@
      </item>
      <item row="0" column="1">
       <widget class="QGroupBox" name="diffuseGroupBox">
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="title">
         <string>diffuse</string>
        </property>
@@ -281,6 +291,12 @@
      </item>
      <item row="0" column="2">
       <widget class="QGroupBox" name="specularGroupBox">
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="title">
         <string>specular</string>
        </property>
@@ -407,73 +423,198 @@
        <property name="title">
         <string>lightPos</string>
        </property>
-       <widget class="QDoubleSpinBox" name="lightPosXSpinBox">
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="1" column="1">
+         <widget class="QSlider" name="lightYSlider">
+          <property name="minimum">
+           <number>-255</number>
+          </property>
+          <property name="maximum">
+           <number>255</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>y</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>x</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QSlider" name="lightXSlider">
+          <property name="minimum">
+           <number>-255</number>
+          </property>
+          <property name="maximum">
+           <number>255</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>z</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QSlider" name="lightZSlider">
+          <property name="minimum">
+           <number>-255</number>
+          </property>
+          <property name="maximum">
+           <number>255</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="1" column="1" colspan="2">
+      <widget class="QGroupBox" name="windGroupBox">
+       <property name="title">
+        <string>wind</string>
+       </property>
+       <widget class="QSlider" name="windXSlider">
         <property name="geometry">
          <rect>
           <x>22</x>
-          <y>22</y>
-          <width>58</width>
-          <height>20</height>
+          <y>51</y>
+          <width>84</width>
+          <height>19</height>
          </rect>
         </property>
+        <property name="minimum">
+         <number>-255</number>
+        </property>
+        <property name="maximum">
+         <number>255</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
        </widget>
-       <widget class="QDoubleSpinBox" name="lightPosYSpinBox">
+       <widget class="QSlider" name="windYSlider">
         <property name="geometry">
          <rect>
           <x>22</x>
-          <y>48</y>
-          <width>58</width>
-          <height>20</height>
+          <y>105</y>
+          <width>84</width>
+          <height>19</height>
          </rect>
         </property>
+        <property name="minimum">
+         <number>-255</number>
+        </property>
+        <property name="maximum">
+         <number>255</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
        </widget>
-       <widget class="QLabel" name="label_5">
+       <widget class="QLabel" name="label_28">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>22</y>
+          <y>51</y>
           <width>16</width>
           <height>16</height>
          </rect>
         </property>
         <property name="text">
-         <string>x</string>
+         <string>X</string>
         </property>
        </widget>
-       <widget class="QLabel" name="label_6">
+       <widget class="QLabel" name="label_29">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>48</y>
+          <y>105</y>
           <width>16</width>
           <height>16</height>
          </rect>
         </property>
         <property name="text">
-         <string>y</string>
+         <string>Y</string>
         </property>
        </widget>
-       <widget class="QLabel" name="label_7">
+       <widget class="QLabel" name="label_30">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>74</y>
+          <y>159</y>
           <width>16</width>
           <height>16</height>
          </rect>
         </property>
         <property name="text">
-         <string>z</string>
+         <string>Z</string>
         </property>
        </widget>
-       <widget class="QDoubleSpinBox" name="lightPosZSpinBox">
+       <widget class="QLabel" name="label_31">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>213</y>
+          <width>16</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>I</string>
+        </property>
+       </widget>
+       <widget class="QSlider" name="windZSlider">
         <property name="geometry">
          <rect>
           <x>22</x>
-          <y>74</y>
-          <width>58</width>
-          <height>20</height>
+          <y>159</y>
+          <width>84</width>
+          <height>19</height>
          </rect>
+        </property>
+        <property name="minimum">
+         <number>-255</number>
+        </property>
+        <property name="maximum">
+         <number>255</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QSlider" name="intensitySlider">
+        <property name="geometry">
+         <rect>
+          <x>22</x>
+          <y>213</y>
+          <width>84</width>
+          <height>19</height>
+         </rect>
+        </property>
+        <property name="maximum">
+         <number>255</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </widget>
@@ -483,6 +624,7 @@
     <zorder>ambientGroupBox</zorder>
     <zorder>diffuseGroupBox</zorder>
     <zorder>specularGroupBox</zorder>
+    <zorder>windGroupBox</zorder>
    </widget>
   </widget>
  </widget>

@@ -168,11 +168,16 @@ void OpenGLScene::setLightPos(QVector3D pos)
     lightPos=pos;
 }
 
+void OpenGLScene::setWind(QVector4D w)
+{
+    env.wind=w;
+}
+
 void OpenGLScene::update()
 {
     for(int i=0;i<modelBox.size();i++)
     {
-        modelBox[i]->update(sphereBox,damping,0.02);
+        modelBox[i]->update(env,0.02);
     }
     QOpenGLWidget::update();
 }

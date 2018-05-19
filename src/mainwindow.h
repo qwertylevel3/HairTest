@@ -21,11 +21,13 @@ public slots:
     void changeDiffuseColor();
     void changeSpecularColor();
     void changeLightPos();
+    void changeWind();
 private:
     QVector4D getAmbiendColor();
     QVector4D getDiffuseColor();
     QVector4D getSpecularColor();
     QVector3D getLightPos();
+    QVector4D getWind();
     Ui::MainWindow *ui;
     OpenGLScene* scene;
 };

@@ -4,6 +4,7 @@
 #include"stable.h"
 #include"model.h"
 #include"sphere.h"
+#include"env.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -28,6 +29,7 @@ public:
     void setDiffuseColor(QVector4D vec);
     void setSpecularColor(QVector4D vec);
     void setLightPos(QVector3D pos);
+    void setWind(QVector4D w);
     void update();
 protected:
     void timerEvent(QTimerEvent *e) Q_DECL_OVERRIDE;
@@ -67,8 +69,7 @@ protected:
     QVector3D lightPos;
 
     //场景参数
-    float damping{0.1};
-    QVector<Sphere> sphereBox;
+    Env env;
 };
 
 #endif // OPENGLSCENE_H
