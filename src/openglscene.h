@@ -3,6 +3,8 @@
 
 #include"stable.h"
 #include"model.h"
+#include"sphere.h"
+
 
 QT_BEGIN_NAMESPACE
 class QPainter;
@@ -10,17 +12,12 @@ class QOpenGLContext;
 class QOpenGLPaintDevice;
 QT_END_NAMESPACE
 
-
-
-
-
 class OpenGLScene : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
 public:
     explicit OpenGLScene(QWidget *parent = 0);
     ~OpenGLScene();
-
 
     QVector4D getAmbiendColor() const;
     QVector4D getDiffuseColor() const;
@@ -31,6 +28,7 @@ public:
     void setDiffuseColor(QVector4D vec);
     void setSpecularColor(QVector4D vec);
     void setLightPos(QVector3D pos);
+    void update();
 protected:
     void timerEvent(QTimerEvent *e) Q_DECL_OVERRIDE;
     void paintGL() Q_DECL_OVERRIDE;
@@ -67,6 +65,10 @@ protected:
     QVector4D diffuseColor;
     QVector4D specularColor;
     QVector3D lightPos;
+
+    //场景参数
+    float damping{0.1};
+    QVector<Sphere> sphereBox;
 };
 
 #endif // OPENGLSCENE_H

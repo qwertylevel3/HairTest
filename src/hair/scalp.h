@@ -11,7 +11,9 @@ public:
     Scalp();
     bool init();
     void draw(QOpenGLShaderProgram &shaderProgram);
+    void update(QVector<Sphere>& sphereBox,float damping,float dt);
 protected:
+    void updateBuf();
     Hair hair;
 
 };

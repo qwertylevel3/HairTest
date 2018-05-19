@@ -69,3 +69,21 @@ void Scalp::draw(QOpenGLShaderProgram &shaderProgram)
     //    glDrawElements(GL_LINES, model->m_edgeIndices.size(), GL_UNSIGNED_INT, model->m_edgeIndices.data());
 
 }
+
+void Scalp::update(QVector<Sphere> &sphereBox, float damping, float dt)
+{
+    hair.update(sphereBox,damping,dt);
+    updateBuf();
+}
+
+void Scalp::updateBuf()
+{
+    arrayBuf.bind();
+    arrayBuf.allocate(hair.getDrawNodeData(),hair.countNode()*sizeof(QVector3D));
+
+    indexBuf.bind();
+    indexBuf.allocate(hair.getNodeIndexData(),hair.countIndex()*sizeof(GLuint));
+
+    normalBuf.bind();
+    normalBuf.allocate(hair.getDrawNodeData(),hair.countNode()*sizeof(QVector3D));
+}

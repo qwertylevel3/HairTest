@@ -31,7 +31,6 @@ bool OpenGLScene::initializeModel()
     model->init();
     modelBox.append(model);
 
-
     Model* scalp=new Scalp();
     scalp->load(QString("model/hairRoot1.obj"));
     scalp->init();
@@ -167,6 +166,15 @@ void OpenGLScene::setSpecularColor(QVector4D vec)
 void OpenGLScene::setLightPos(QVector3D pos)
 {
     lightPos=pos;
+}
+
+void OpenGLScene::update()
+{
+    for(int i=0;i<modelBox.size();i++)
+    {
+        modelBox[i]->update(sphereBox,damping,0.02);
+    }
+    QOpenGLWidget::update();
 }
 
 void OpenGLScene::paintGL()
