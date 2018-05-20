@@ -28,6 +28,10 @@ public:
     void* getNormalsData() {return &normals[0];}
     void* getEdgeIndicesData(){return &edgeIndices[0];}
     void* getIndicesData(){return &pointIndices[0];}
+
+    QMatrix4x4 getMatrix(){return mMatrix;}
+    void setMatrix(const QMatrix4x4 &matrix);
+
 protected:
 
     QString m_fileName;//文件名
@@ -40,5 +44,6 @@ protected:
     QOpenGLBuffer arrayBuf;
     QOpenGLBuffer normalBuf;
 
+    QMatrix4x4 mMatrix;
 };
 #endif // MODEL_H

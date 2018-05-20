@@ -135,6 +135,11 @@ void Model::update(Env &env, float dt)
 
 }
 
+void Model::setMatrix(const QMatrix4x4 &matrix)
+{
+    mMatrix = matrix;
+}
+
 Model::Model()
 {
     initializeOpenGLFunctions();

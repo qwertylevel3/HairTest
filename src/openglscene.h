@@ -13,10 +13,22 @@ class QOpenGLContext;
 class QOpenGLPaintDevice;
 QT_END_NAMESPACE
 
+struct Camera
+{
+    QVector3D pos{0.0,0.0,5.0};
+    QVector3D center{0.0,0.0,0.0};
+    QVector3D up{0.0,1.0,0.0};
+};
+
 class OpenGLScene : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
 public:
+    enum MouseFlag
+    {
+        NORMAL,MOVE,ROTATE
+    };
+
     explicit OpenGLScene(QWidget *parent = 0);
     ~OpenGLScene();
 
@@ -41,6 +53,7 @@ protected:
     void initTextures();
 
     void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
 
@@ -56,10 +69,12 @@ protected:
     //鼠标坐标
     QPoint pressPos;
     QPoint releasePos;
+    MouseFlag mouseFlag{NORMAL};
+
 
     //变换矩阵
     QMatrix4x4 projection;
-    QMatrix4x4 mvMatrix;
+    QMatrix4x4 vMatrix;
     QMatrix4x4 normalMatrix;
 
     //phong 关照
@@ -70,6 +85,11 @@ protected:
 
     //场景参数
     Env env;
+
+    //camera
+    Camera camera;
+    int angle{0};
+
 };
 
 #endif // OPENGLSCENE_H
