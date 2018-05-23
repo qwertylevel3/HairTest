@@ -37,13 +37,15 @@ public:
     {
         return nodeIndex.size();
     }
+
+    void setMMatrix(QMatrix4x4 m);
 protected:
     QVector3D calNodeForce(Env& env,int nodeIndex);
     //verlet
     QVector3D verlet(int nodeIndex, float damping, float dt, QVector3D a);
 
     //碰撞检测
-    QVector3D collideSphere(QVector<Sphere>& sphereBox,QVector3D p);
+    QVector3D collideSphere(QVector<Sphere *> &sphereBox, QVector3D p);
 
     //长度约束
     QVector3D lengthConstraint(QVector3D p1,QVector3D p2,float length);

@@ -26,7 +26,7 @@ class OpenGLScene : public QOpenGLWidget, protected QOpenGLFunctions
 public:
     enum MouseFlag
     {
-        NORMAL,MOVE,ROTATE
+        NORMAL,SCALE,ROTATECAMERA,ROTATEMODEL
     };
 
     explicit OpenGLScene(QWidget *parent = 0);
@@ -56,6 +56,9 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
+
+    void rotateCamera(QMouseEvent *event);
+    void rotateModel(QMouseEvent* event);
 
     QBasicTimer timer;
 
@@ -89,6 +92,7 @@ protected:
     //camera
     Camera camera;
     int angle{0};
+    float modelRotateAngle{0};
 
 };
 

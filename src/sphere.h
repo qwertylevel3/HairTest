@@ -2,11 +2,16 @@
 #define SPHERE_H
 
 
-#include "stable.h"
+//#include"stable.h"
+#include"model.h"
+
 
 //碰撞球
-struct Sphere
+class Sphere:public Model
 {
+public:
+    Sphere();
+protected:
     float r;
     QVector3D pos;
 };

@@ -6,7 +6,7 @@
 
 struct Env
 {
-    QVector<Sphere> sphereBox;
+    QVector<Sphere*> sphereBox;
     float damping{0.1};
     QVector4D wind;
 };

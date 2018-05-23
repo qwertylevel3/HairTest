@@ -32,7 +32,7 @@ bool Model::load(const QString &filePath)
                 boundsMin[i] = qMin(boundsMin[i], p[i]);
                 boundsMax[i] = qMax(boundsMax[i], p[i]);
             }
-            points << p;
+            oriPoints << p;
         } else if (id == "f" || id == "fo") {
             QVarLengthArray<int, 4> p;
 
@@ -41,7 +41,7 @@ bool Model::load(const QString &filePath)
                 ts >> vertex;
                 const int vertexIndex = vertex.split('/').value(0).toInt();
                 if (vertexIndex)
-                    p.append(vertexIndex > 0 ? vertexIndex - 1 : points.size()+vertexIndex);
+                    p.append(vertexIndex > 0 ? vertexIndex - 1 : oriPoints.size()+vertexIndex);
             }
 
             for (int i = 0; i < p.size(); ++i) {
@@ -62,22 +62,32 @@ bool Model::load(const QString &filePath)
     }
     const QVector3D bounds = boundsMax - boundsMin;
     const qreal scale = 1 / qMax(bounds.x(), qMax(bounds.y(), bounds.z()));
-    for (int i = 0; i < points.size(); ++i)
-        points[i] = (points[i]-(boundsMin + bounds*0.5))*scale;
+    for (int i = 0; i < oriPoints.size(); ++i)
+        oriPoints[i] = (oriPoints[i]-(boundsMin + bounds*0.5))*scale;
 
-    normals.resize(points.size());
+    oriNormals.resize(oriPoints.size());
     for (int i = 0; i < pointIndices.size(); i += 3) {
-        const QVector3D a = points.at(pointIndices.at(i));
-        const QVector3D b = points.at(pointIndices.at(i+1));
-        const QVector3D c = points.at(pointIndices.at(i+2));
+        const QVector3D a = oriPoints.at(pointIndices.at(i));
+        const QVector3D b = oriPoints.at(pointIndices.at(i+1));
+        const QVector3D c = oriPoints.at(pointIndices.at(i+2));
         const QVector3D normal = QVector3D::crossProduct(b-a,c-a).normalized();
 
         for (int j = 0; j < 3; ++j)
-            normals[pointIndices.at(i + j)] += normal;
+            oriNormals[pointIndices.at(i + j)] += normal;
     }
 
-    for (int i = 0; i < normals.size(); ++i)
-        normals[i] = normals[i].normalized();
+    for (int i = 0; i < oriNormals.size(); ++i)
+        oriNormals[i] = oriNormals[i].normalized();
+
+
+    for(int i=0;i<oriPoints.size();i++)
+    {
+        points.push_back(oriPoints[i]);
+    }
+    for(int i=0;i<oriNormals.size();i++)
+    {
+        normals.push_back(oriNormals[i]);
+    }
 
     return true;
 }
@@ -95,6 +105,8 @@ bool Model::init()
     normalBuf.create();
     normalBuf.bind();
     normalBuf.allocate(getNormalsData(),countNormals()*sizeof(QVector3D));
+
+    mMatrix.setToIdentity();
 
     return true;
 }
@@ -133,6 +145,29 @@ void Model::draw(QOpenGLShaderProgram& shaderProgram)
 void Model::update(Env &env, float dt)
 {
 
+}
+
+void Model::rotate(float angle, float x, float y, float z)
+{
+    mMatrix.rotate(angle,x,y,z);
+
+    for(int i=0;i<oriPoints.size();i++)
+    {
+        QVector4D temp=oriPoints[i].toVector4D();
+        points[i]=(temp*mMatrix).toVector3D();
+    }
+    for(int i=0;i<oriNormals.size();i++)
+    {
+        QVector4D temp=oriNormals[i].toVector4D();
+        normals[i]=(temp*mMatrix).toVector3D();
+    }
+
+    //更新顶点和法向数据
+    arrayBuf.bind();
+    arrayBuf.allocate(getPointsData(), countPoints() * sizeof(QVector3D));
+
+    normalBuf.bind();
+    normalBuf.allocate(getNormalsData(),countNormals()*sizeof(QVector3D));
 }
 
 void Model::setMatrix(const QMatrix4x4 &matrix)

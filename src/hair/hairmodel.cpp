@@ -1,12 +1,12 @@
-#include "scalp.h"
+#include "hairmodel.h"
 
 
-Scalp::Scalp()
+HairModel::HairModel()
 {
 
 }
 
-bool Scalp::init()
+bool HairModel::init()
 {
 //    arrayBuf.create();
 //    arrayBuf.bind();
@@ -20,7 +20,7 @@ bool Scalp::init()
 //    normalBuf.bind();
 //    normalBuf.allocate(getNormalsData(),countNormals()*sizeof(QVector3D));
 
-    hair.init(points);
+    hair.init(oriPoints);
 
     arrayBuf.create();
     arrayBuf.bind();
@@ -39,7 +39,7 @@ bool Scalp::init()
     return true;
 }
 
-void Scalp::draw(QOpenGLShaderProgram &shaderProgram)
+void HairModel::draw(QOpenGLShaderProgram &shaderProgram)
 {
     normalBuf.bind();
 
@@ -70,14 +70,20 @@ void Scalp::draw(QOpenGLShaderProgram &shaderProgram)
 
 }
 
-void Scalp::update(Env &env, float dt)
+void HairModel::update(Env &env, float dt)
 {
     hair.update(env,dt);
     updateBuf();
 }
 
+void HairModel::rotate(float angle, float x, float y, float z)
+{
+    mMatrix.rotate(angle,x,y,z);
+    hair.setMMatrix(mMatrix);
+}
 
-void Scalp::updateBuf()
+
+void HairModel::updateBuf()
 {
     arrayBuf.bind();
     arrayBuf.allocate(hair.getDrawNodeData(),hair.countNode()*sizeof(QVector3D));

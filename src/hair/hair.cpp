@@ -48,7 +48,9 @@ void Hair::update(Env &env, float dt)
 
             }
             //变换发根位置
-            strand.rootPos=transform(strand.rootPos);
+            auto root=nodeBox[strand.nodeStart];
+            nodeBox[strand.nodeStart].p1=transform(root.p1);
+//            strand.rootPos=transform(strand.rootPos);
         }
     }
 
@@ -56,12 +58,12 @@ void Hair::update(Env &env, float dt)
 
 void Hair::init(QVector<QVector3D> &rootPosBox)
 {
+    mMatrix.setToIdentity();
     //生成头发节点
     for(int i=0; i<rootPosBox.size(); i++)
     {
         HairStrand strand;
 
-        strand.rootPos=rootPosBox[i];
         strand.nodeStart=nodeBox.size();
 
         int nodeCount=10;
@@ -101,6 +103,11 @@ void Hair::init(QVector<QVector3D> &rootPosBox)
     }
 }
 
+void Hair::setMMatrix(QMatrix4x4 m)
+{
+    mMatrix=m;
+}
+
 QVector3D Hair::calNodeForce(Env &env, int nodeIndex)
 {
     QVector3D vec;
@@ -115,6 +122,15 @@ QVector3D Hair::calNodeForce(Env &env, int nodeIndex)
     vec.setY(wind.y());
     vec.setZ(wind.z());
 
+    //随机误差
+    QVector3D randVec;
+    randVec.setX(rand()%200);
+//    randVec.setY(rand()%400);
+    randVec.setZ(rand()%200);
+
+    vec+=randVec;
+
+
     float gravity=nodeBox[nodeIndex].mass*9.8;
     vec+= QVector3D(0,-gravity,0);
     return vec;
@@ -128,7 +144,7 @@ QVector3D Hair::verlet(int nodeIndex, float damping, float dt, QVector3D a)
     return p1+damping*(p1-p0)+a*dt*dt;
 }
 
-QVector3D Hair::collideSphere(QVector<Sphere> &sphereBox, QVector3D p)
+QVector3D Hair::collideSphere(QVector<Sphere*> &sphereBox, QVector3D p)
 {
     //TODO:
     //将p推到球面
@@ -158,8 +174,8 @@ QVector3D Hair::lengthConstraint(QVector3D p1, QVector3D p2, float length)
 
 QVector3D Hair::transform(QVector3D p)
 {
-    //TODO
     //发根位置变换
-    return p;
+    QVector4D temp=p.toVector4D();
+    return (temp*mMatrix).toVector3D();
 }
 

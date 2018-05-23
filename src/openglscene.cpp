@@ -1,6 +1,8 @@
 #include "openglscene.h"
+#include"sphere.h"
 #include"math.h"
-#include "scalp.h"
+#include"line.h"
+#include "hairmodel.h"
 
 
 OpenGLScene::OpenGLScene(QWidget *parent)
@@ -27,15 +29,21 @@ void OpenGLScene::timerEvent(QTimerEvent *e)
 
 bool OpenGLScene::initializeModel()
 {
-    Model* model=new Model();
-    model->load(QString("model/hairRoot1.obj"));
-    model->init();
-    modelBox.append(model);
+//    Model* model=new Model();
+//    model->load(QString("model/test.obj"));
+//    model->init();
+//    modelBox.append(model);
+//
+//    HairModel* scalp=new HairModel();
+//    scalp->load(QString("model/hairRoot1.obj"));
+//    scalp->init();
+//    modelBox.append(scalp);
 
-    Model* scalp=new Scalp();
-    scalp->load(QString("model/hairRoot1.obj"));
-    scalp->init();
-    modelBox.append(scalp);
+    Line* line=new Line();
+    line->init();
+    line->setP1(QVector3D(0,0,0));
+    line->setP1(QVector3D(5,5,5));
+    modelBox.append(line);
 
     return true;
 }
@@ -125,12 +133,16 @@ void OpenGLScene::mousePressEvent(QMouseEvent *event)
     pressPos=event->pos();
     if(event->button()==Qt::RightButton)
     {
-        mouseFlag=ROTATE;
+        mouseFlag=ROTATECAMERA;
 //        mouseMoveEvent(event);
     }
     else if(event->button()==Qt::MidButton)
     {
-        mouseFlag=MOVE;
+        mouseFlag=SCALE;
+    }
+    else if(event->button()==Qt::LeftButton)
+    {
+        mouseFlag=ROTATEMODEL;
     }
 }
 
@@ -141,36 +153,13 @@ void OpenGLScene::mouseReleaseEvent(QMouseEvent *event)
 
 void OpenGLScene::mouseMoveEvent(QMouseEvent *event)
 {
-    if(mouseFlag==ROTATE)
+    if(mouseFlag==ROTATECAMERA)
     {
-        releasePos=event->pos();
-        auto vec=releasePos-pressPos;
-        int len=vec.manhattanLength();
-
-        if(pressPos.x()>releasePos.x())
-        {
-            len=-len;
-        }
-        angle+=len;
-
-
-        float x=sin(float(angle)*3.14/180.0);
-        float z=cos(float(angle)*3.14/180.0);
-        float dis=camera.pos.length();
-
-        QVector3D vec2(-x,0,-z);
-        vec2.normalize();
-        vec2*=dis;
-
-        camera.pos.setX(vec2.x());
-        camera.pos.setZ(vec2.z());
-
-        vMatrix.setToIdentity();
-        vMatrix.lookAt(camera.pos,camera.center,camera.up);
-
-        normalMatrix.rotate(len,0,1,0);
-
-        pressPos=releasePos;
+        rotateCamera(event);
+    }
+    else if(mouseFlag==ROTATEMODEL)
+    {
+        rotateModel(event);
     }
 
 }
@@ -189,6 +178,58 @@ void OpenGLScene::wheelEvent(QWheelEvent *event)
 
     vMatrix.setToIdentity();
     vMatrix.lookAt(camera.pos,camera.center,camera.up);
+}
+
+void OpenGLScene::rotateCamera(QMouseEvent *event)
+{
+    releasePos=event->pos();
+    auto vec=releasePos-pressPos;
+    int len=vec.manhattanLength();
+
+    if(pressPos.x()>releasePos.x())
+    {
+        len=-len;
+    }
+    angle+=len;
+
+
+    float x=sin(float(angle)*3.14/180.0);
+    float z=cos(float(angle)*3.14/180.0);
+    float dis=camera.pos.length();
+
+    QVector3D vec2(-x,0,-z);
+    vec2.normalize();
+    vec2*=dis;
+
+    camera.pos.setX(vec2.x());
+    camera.pos.setZ(vec2.z());
+
+    vMatrix.setToIdentity();
+    vMatrix.lookAt(camera.pos,camera.center,camera.up);
+
+    normalMatrix.rotate(len,0,1,0);
+
+    pressPos=releasePos;
+
+}
+
+void OpenGLScene::rotateModel(QMouseEvent *event)
+{
+    for(int i=0; i<modelBox.size(); i++)
+    {
+        releasePos=event->pos();
+        auto vec=releasePos-pressPos;
+        float len=vec.manhattanLength();
+
+        if(pressPos.x()>releasePos.x())
+        {
+            len=-len;
+        }
+        len=len/1000;
+        modelRotateAngle+=len;
+
+        modelBox[i]->rotate(modelRotateAngle,0,1,0);
+    }
 }
 
 void OpenGLScene::setAmbiendColor(QVector4D vec)
@@ -218,9 +259,11 @@ void OpenGLScene::setWind(QVector4D w)
 
 void OpenGLScene::update()
 {
+    //时间间隔
+    float delta=0.03;
     for(int i=0; i<modelBox.size(); i++)
     {
-        modelBox[i]->update(env,0.02);
+        modelBox[i]->update(env,delta);
     }
     QOpenGLWidget::update();
 }

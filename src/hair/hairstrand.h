@@ -6,9 +6,8 @@
 struct HairStrand
 {
     //此发束中节点数组起始和结束索引
+    //默认起始为发根
     int nodeStart,nodeEnd;
-    //发根坐标
-    QVector3D rootPos;
 };
 
 #endif // HAIRSTRAND_H

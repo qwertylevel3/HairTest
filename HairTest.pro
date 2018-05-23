@@ -24,8 +24,9 @@ SOURCES += src/main.cpp \
     src/openglscene.cpp \
     src/hair/hair.cpp \
     src/sphere.cpp \
-    src/hair/scalp.cpp \
-    src/env.cpp
+    src/env.cpp \
+    src/hair/hairmodel.cpp \
+    src/line.cpp
 
 HEADERS  += \
     src/hair/hairnode.h \
@@ -36,11 +37,13 @@ HEADERS  += \
     src/stable.h \
     src/hair/hair.h \
     src/sphere.h \
-    src/hair/scalp.h \
-    src/env.h
+    src/env.h \
+    src/hair/hairmodel.h \
+    src/line.h
 
 FORMS += \
     ui/mainwindow.ui
+
 
 INCLUDEPATH += $$PWD\src\
 INCLUDEPATH += $$PWD\src\hair\
