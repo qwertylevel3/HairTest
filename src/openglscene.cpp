@@ -30,12 +30,20 @@ void OpenGLScene::timerEvent(QTimerEvent *e)
 
 bool OpenGLScene::initializeModel()
 {
+    //碰撞球
     Sphere* model=new Sphere();
     model->load(QString("model/sphere.obj"));
     model->init();
     env.sphereBox.append(model);
     modelBox.append(model);
 
+    //上半身人头模型
+    Model* head=new Model();
+    head->load(QString("model/head.obj"));
+    head->init();
+    modelBox.append(head);
+
+    //头发,由头皮模型生成
     HairModel* scalp=new HairModel();
     scalp->load(QString("model/hairRoot1.obj"));
     scalp->init();
@@ -310,7 +318,7 @@ void OpenGLScene::paintGL()
 
     QMatrix3x3 tempMatrix=normalMatrix.toGenericMatrix< 3,3 >();
 
-    program.setUniformValue("mvpMatrix", projection * vMatrix);
+    program.setUniformValue("pMatrix", projection);
     program.setUniformValue("vMatrix", vMatrix);
     program.setUniformValue("normalMatrix",tempMatrix);
     program.setUniformValue("vLightPosition",lightPos);
@@ -336,13 +344,17 @@ void OpenGLScene::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 1.0, zFar = 20.0, fov = 45.0;
+    const qreal zNear = 1.0, zFar = 50.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();
 
     // Set perspective projection
     projection.perspective(fov, aspect, zNear, zFar);
+
+    vMatrix.setToIdentity();
+    vMatrix.lookAt(camera.pos,camera.center,camera.up);
+
 }
 
 

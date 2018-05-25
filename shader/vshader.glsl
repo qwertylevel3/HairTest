@@ -8,7 +8,7 @@
 in vec4 vVertex;
 in vec3 vNormal;
 
-uniform mat4 mvpMatrix;
+uniform mat4 pMatrix;
 uniform mat4 vMatrix;
 uniform mat4 mMatrix;
 uniform mat3 normalMatrix;
@@ -21,10 +21,10 @@ void main()
 {
     vVaryingNormal=normalMatrix*vNormal;
 
-    vec4 vPosition4=mMatrix*vMatrix*vVertex;
+    vec4 vPosition4=vMatrix*mMatrix*vVertex;
     vec3 vPosition3=vPosition4.xyz/vPosition4.w;
 
     vVaryingLightDir=normalize(vLightPosition-vPosition3);
 
-    gl_Position=mvpMatrix*vVertex;
+    gl_Position=pMatrix*vMatrix*mMatrix*vVertex;
 }

@@ -15,7 +15,7 @@ QT_END_NAMESPACE
 
 struct Camera
 {
-    QVector3D pos{0.0,0.0,5.0};
+    QVector3D pos{0.0,0.0,-10.0};
     QVector3D center{0.0,0.0,0.0};
     QVector3D up{0.0,1.0,0.0};
 };

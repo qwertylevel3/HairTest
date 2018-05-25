@@ -97,9 +97,15 @@ void Hair::init(QVector<QVector3D> &rootPosBox)
     }
 
     //生成头发节点索引
-    for(int i=0; i<nodeBox.size(); i++)
+    for(int i=0;i<strandBox.size();i++)
     {
-        nodeIndex.append(i);
+        int index=strandBox[i].nodeStart;
+        while(index<strandBox[i].nodeEnd-1)
+        {
+            nodeIndex.append(index);
+            nodeIndex.append(index+1);
+            index++;
+        }
     }
 }
 
