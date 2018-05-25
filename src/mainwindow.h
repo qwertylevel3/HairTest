@@ -22,6 +22,8 @@ public slots:
     void changeSpecularColor();
     void changeLightPos();
     void changeWind();
+
+    void keyPressEvent(QKeyEvent *event);
 private:
     QVector4D getAmbiendColor();
     QVector4D getDiffuseColor();

@@ -77,6 +77,11 @@ void MainWindow::changeWind()
     scene->setWind(this->getWind());
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    scene->keyPressEvent(event);
+}
+
 QVector4D MainWindow::getAmbiendColor()
 {
     float tr=ui->ambientRSlider->value();

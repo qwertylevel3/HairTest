@@ -15,6 +15,7 @@ OpenGLScene::OpenGLScene(QWidget *parent)
     QSurfaceFormat::setDefaultFormat(format);
 
     this->setFormat(format);
+    this->setEnabled(true);
 }
 
 OpenGLScene::~OpenGLScene()
@@ -29,21 +30,22 @@ void OpenGLScene::timerEvent(QTimerEvent *e)
 
 bool OpenGLScene::initializeModel()
 {
-//    Model* model=new Model();
-//    model->load(QString("model/test.obj"));
-//    model->init();
-//    modelBox.append(model);
-//
-//    HairModel* scalp=new HairModel();
-//    scalp->load(QString("model/hairRoot1.obj"));
-//    scalp->init();
-//    modelBox.append(scalp);
+    Sphere* model=new Sphere();
+    model->load(QString("model/sphere.obj"));
+    model->init();
+    env.sphereBox.append(model);
+    modelBox.append(model);
 
-    Line* line=new Line();
-    line->init();
-    line->setP1(QVector3D(0,0,0));
-    line->setP1(QVector3D(5,5,5));
-    modelBox.append(line);
+    HairModel* scalp=new HairModel();
+    scalp->load(QString("model/hairRoot1.obj"));
+    scalp->init();
+    modelBox.append(scalp);
+
+//    Line* line=new Line();
+//    line->init();
+//    line->setP1(QVector3D(0,0,0));
+//    line->setP1(QVector3D(5,5,5));
+//    modelBox.append(line);
 
     return true;
 }
@@ -126,6 +128,24 @@ void OpenGLScene::initTextures()
     // Wrap texture coordinates by repeating
     // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
     texture->setWrapMode(QOpenGLTexture::Repeat);
+}
+
+void OpenGLScene::keyPressEvent(QKeyEvent *event)
+{
+    switch(event->key())
+    {
+    case Qt::Key_0:
+    case Qt::Key_1:
+    case Qt::Key_2:
+    case Qt::Key_3:
+    case Qt::Key_4:
+    case Qt::Key_5:
+    case Qt::Key_6:
+    case Qt::Key_7:
+        int index=event->key()-0x30;
+        changeModelHidden(index);
+        break;
+    }
 }
 
 void OpenGLScene::mousePressEvent(QMouseEvent *event)
@@ -232,6 +252,17 @@ void OpenGLScene::rotateModel(QMouseEvent *event)
     }
 }
 
+void OpenGLScene::changeModelHidden(int index)
+{
+    qDebug()<<index;
+    if(index<0 || index>=modelBox.size())
+    {
+        return ;
+    }
+    bool flag=modelBox[index]->isHide();
+    modelBox[index]->setHide(!flag);
+}
+
 void OpenGLScene::setAmbiendColor(QVector4D vec)
 {
     ambiendColor=vec;
@@ -292,7 +323,10 @@ void OpenGLScene::paintGL()
     for(int i=0; i<modelBox.size(); i++)
     {
         program.setUniformValue("mMatrix", modelBox[i]->getMatrix());
-        modelBox[i]->draw(program);
+        if(!modelBox[i]->isHide())
+        {
+            modelBox[i]->draw(program);
+        }
     }
 }
 

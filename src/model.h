@@ -74,7 +74,14 @@ public:
     }
     void setMatrix(const QMatrix4x4 &matrix);
 
-
+    bool isHide() const
+    {
+        return hide;
+    }
+    void setHide(bool h)
+    {
+        hide=h;
+    }
 protected:
     QString m_fileName;//文件名
     QVector<QVector3D> oriPoints;//顶点信息
@@ -89,5 +96,7 @@ protected:
     QOpenGLBuffer normalBuf;
 
     QMatrix4x4 mMatrix;
+
+    bool hide{false};
 };
 #endif // MODEL_H

@@ -124,12 +124,11 @@ QVector3D Hair::calNodeForce(Env &env, int nodeIndex)
 
     //随机误差
     QVector3D randVec;
-    randVec.setX(rand()%200);
-//    randVec.setY(rand()%400);
-    randVec.setZ(rand()%200);
+    randVec.setX(rand()%1);
+    randVec.setY(rand()%1);
+    randVec.setZ(rand()%1);
 
     vec+=randVec;
-
 
     float gravity=nodeBox[nodeIndex].mass*9.8;
     vec+= QVector3D(0,-gravity,0);
@@ -146,8 +145,19 @@ QVector3D Hair::verlet(int nodeIndex, float damping, float dt, QVector3D a)
 
 QVector3D Hair::collideSphere(QVector<Sphere*> &sphereBox, QVector3D p)
 {
-    //TODO:
-    //将p推到球面
+    for(int i=0;i<sphereBox.size();i++)
+    {
+        float r=sphereBox[i]->getR();
+        QVector3D center=sphereBox[i]->getCenter();
+
+        if(center.distanceToPoint(p)<r)
+        {
+            QVector3D vec=p-center;
+            vec.normalize();
+            vec*=r;
+            p=center+vec;
+        }
+    }
     return p;
 }
 

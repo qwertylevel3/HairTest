@@ -43,6 +43,8 @@ public:
     void setLightPos(QVector3D pos);
     void setWind(QVector4D w);
     void update();
+
+    void keyPressEvent(QKeyEvent *event);
 protected:
     void timerEvent(QTimerEvent *e) Q_DECL_OVERRIDE;
     void paintGL() Q_DECL_OVERRIDE;
@@ -52,6 +54,7 @@ protected:
     void initShaders();
     void initTextures();
 
+
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
@@ -59,6 +62,8 @@ protected:
 
     void rotateCamera(QMouseEvent *event);
     void rotateModel(QMouseEvent* event);
+
+    void changeModelHidden(int index);
 
     QBasicTimer timer;
 

@@ -11,6 +11,9 @@ class Sphere:public Model
 {
 public:
     Sphere();
+    bool init();
+    float getR();
+    QVector3D getCenter();
 protected:
     float r;
     QVector3D pos;
