@@ -37,7 +37,6 @@ public:
     {
         return nodeIndex.size();
     }
-
     void setMMatrix(QMatrix4x4 m);
 protected:
     QVector3D calNodeForce(Env& env,int nodeIndex);

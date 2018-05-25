@@ -28,33 +28,11 @@ void OpenGLScene::timerEvent(QTimerEvent *e)
     update();
 }
 
-bool OpenGLScene::initializeModel()
+bool OpenGLScene::initModel()
 {
-    //碰撞球
-    Sphere* model=new Sphere();
-    model->load(QString("model/sphere.obj"));
-    model->init();
-    env.sphereBox.append(model);
-    modelBox.append(model);
-
-    //上半身人头模型
-    Model* head=new Model();
-    head->load(QString("model/head.obj"));
-    head->init();
-    modelBox.append(head);
-
-    //头发,由头皮模型生成
-    HairModel* scalp=new HairModel();
-    scalp->load(QString("model/hairRoot1.obj"));
-    scalp->init();
-    modelBox.append(scalp);
-
-//    Line* line=new Line();
-//    line->init();
-//    line->setP1(QVector3D(0,0,0));
-//    line->setP1(QVector3D(5,5,5));
-//    modelBox.append(line);
-
+    initSphereModel();
+    initHeadModel();
+    initHairModel();
     return true;
 }
 
@@ -82,7 +60,7 @@ void OpenGLScene::initializeGL()
 {
     initializeOpenGLFunctions();
 
-    initializeModel();
+    initModel();
     initShaders();
 //    initTextures();
 
@@ -269,6 +247,43 @@ void OpenGLScene::changeModelHidden(int index)
     }
     bool flag=modelBox[index]->isHide();
     modelBox[index]->setHide(!flag);
+}
+
+void OpenGLScene::initSphereModel()
+{
+    //碰撞球
+    Sphere* sphere1=new Sphere();
+    sphere1->load(QString("model/sphere.obj"));
+    sphere1->init();
+    env.sphereBox.append(sphere1);
+    modelBox.append(sphere1);
+
+//    //碰撞球
+//    Sphere* sphere2=new Sphere();
+//    sphere2->load(QString("model/sphere2.obj"));
+//    sphere2->init();
+//    env.sphereBox.append(sphere2);
+//    modelBox.append(sphere2);
+}
+
+void OpenGLScene::initHeadModel()
+{
+    //上半身人头模型
+    Model* head=new Model();
+    head->load(QString("model/head.obj"));
+    head->init();
+    modelBox.append(head);
+
+}
+
+void OpenGLScene::initHairModel()
+{
+    //头发,由头皮模型生成
+    HairModel* scalp=new HairModel();
+    scalp->load(QString("model/hairRoot1.obj"));
+    scalp->init();
+    modelBox.append(scalp);
+
 }
 
 void OpenGLScene::setAmbiendColor(QVector4D vec)

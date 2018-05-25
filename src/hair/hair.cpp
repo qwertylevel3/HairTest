@@ -27,7 +27,7 @@ void Hair::update(Env &env, float dt)
 
     for(int i=0; i<strandBox.size(); i++)
     {
-        int iterationCount=2;
+        int iterationCount=3;
 
         while(iterationCount>0)
         {

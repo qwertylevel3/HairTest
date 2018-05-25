@@ -65,13 +65,18 @@ protected:
 
     void changeModelHidden(int index);
 
+
+    void initSphereModel();
+    void initHeadModel();
+    void initHairModel();
+
     QBasicTimer timer;
 
     QOpenGLTexture *texture;
 
     QOpenGLShaderProgram program;
 
-    bool initializeModel();
+    bool initModel();
     QVector<Model*> modelBox;
 
     //鼠标坐标

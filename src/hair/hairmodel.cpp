@@ -78,8 +78,8 @@ void HairModel::update(Env &env, float dt)
 
 void HairModel::rotate(float angle, float x, float y, float z)
 {
-    mMatrix.rotate(angle,x,y,z);
-    hair.setMMatrix(mMatrix);
+//    mMatrix.rotate(angle,x,y,z);
+//    hair.setMMatrix(mMatrix);
 }
 
 
