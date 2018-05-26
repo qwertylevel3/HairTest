@@ -48,8 +48,8 @@ void Hair::update(Env &env, float dt)
 
             }
             //变换发根位置
-            auto root=nodeBox[strand.nodeStart];
-            nodeBox[strand.nodeStart].p1=transform(root.p1);
+//            auto root=nodeBox[strand.nodeStart];
+//            nodeBox[strand.nodeStart].p1=transform(root.p1);
 //            strand.rootPos=transform(strand.rootPos);
         }
     }
@@ -66,12 +66,13 @@ void Hair::init(QVector<QVector3D> &rootPosBox)
 
         strand.nodeStart=nodeBox.size();
 
-        int nodeCount=10;
+        //每根头发节点数量
+        int nodeCount=20;
         auto tempPos=rootPosBox[i];
         while(nodeCount>0)
         {
             HairNode node;
-            if(nodeCount==10)
+            if(nodeCount==20)
             {
                 //首个节点距离上个节点止动长度为0
                 node.length=0;
@@ -97,7 +98,7 @@ void Hair::init(QVector<QVector3D> &rootPosBox)
     }
 
     //生成头发节点索引
-    for(int i=0;i<strandBox.size();i++)
+    for(int i=0; i<strandBox.size(); i++)
     {
         int index=strandBox[i].nodeStart;
         while(index<strandBox[i].nodeEnd-1)
@@ -112,6 +113,17 @@ void Hair::init(QVector<QVector3D> &rootPosBox)
 void Hair::setMMatrix(QMatrix4x4 m)
 {
     mMatrix=m;
+}
+
+void Hair::rotate(float angle, float x, float y, float z)
+{
+    mMatrix.rotate(angle,x,y,z);
+    for(int i=0; i<strandBox.size(); i++)
+    {
+        auto strand=strandBox[i];
+        auto root=nodeBox[strand.nodeStart];
+        nodeBox[strand.nodeStart].p1=transform(root.p1);
+    }
 }
 
 QVector3D Hair::calNodeForce(Env &env, int nodeIndex)
@@ -151,7 +163,7 @@ QVector3D Hair::verlet(int nodeIndex, float damping, float dt, QVector3D a)
 
 QVector3D Hair::collideSphere(QVector<Sphere*> &sphereBox, QVector3D p)
 {
-    for(int i=0;i<sphereBox.size();i++)
+    for(int i=0; i<sphereBox.size(); i++)
     {
         float r=sphereBox[i]->getR();
         QVector3D center=sphereBox[i]->getCenter();

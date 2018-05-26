@@ -38,6 +38,7 @@ public:
         return nodeIndex.size();
     }
     void setMMatrix(QMatrix4x4 m);
+    void rotate(float angle,float x,float y,float z);
 protected:
     QVector3D calNodeForce(Env& env,int nodeIndex);
     //verlet

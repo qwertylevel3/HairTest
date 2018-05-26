@@ -21,7 +21,7 @@ void main()
 {
     vVaryingNormal=normalMatrix*vNormal;
 
-    vec4 vPosition4=vMatrix*mMatrix*vVertex;
+    vec4 vPosition4=mMatrix*vMatrix*vVertex;
     vec3 vPosition3=vPosition4.xyz/vPosition4.w;
 
     vVaryingLightDir=normalize(vLightPosition-vPosition3);

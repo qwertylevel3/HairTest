@@ -162,12 +162,12 @@ void Model::rotate(float angle, float x, float y, float z)
 
     for(int i=0; i<oriPoints.size(); i++)
     {
-        QVector4D temp=oriPoints[i].toVector4D();
+        QVector4D temp=points[i].toVector4D();
         points[i]=(temp*mMatrix).toVector3D();
     }
     for(int i=0; i<oriNormals.size(); i++)
     {
-        QVector4D temp=oriNormals[i].toVector4D();
+        QVector4D temp=normals[i].toVector4D();
         normals[i]=(temp*mMatrix).toVector3D();
     }
 

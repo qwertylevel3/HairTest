@@ -235,6 +235,8 @@ void OpenGLScene::rotateModel(QMouseEvent *event)
         modelRotateAngle+=len;
 
         modelBox[i]->rotate(modelRotateAngle,0,1,0);
+
+        pressPos=releasePos;
     }
 }
 
