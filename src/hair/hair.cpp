@@ -76,15 +76,17 @@ void Hair::init(QVector<QVector3D> &rootPosBox)
             {
                 //首个节点距离上个节点止动长度为0
                 node.length=0;
+                tempPos.setY(tempPos.y());
             }
             else
             {
                 node.length=0.1;
+                tempPos.setY(tempPos.y()+0.1);
             }
 
+            //单个节点质量
             node.mass=10;
 
-            tempPos.setY(tempPos.y()+0.1);
             node.p0=tempPos;
             node.p1=tempPos;
             nodeBox.push_back(node);
@@ -122,7 +124,10 @@ void Hair::rotate(float angle, float x, float y, float z)
     {
         auto strand=strandBox[i];
         auto root=nodeBox[strand.nodeStart];
-        nodeBox[strand.nodeStart].p1=transform(root.p1);
+        auto newPos=transform(root.p1);
+
+        nodeBox[strand.nodeStart].p1=newPos;
+        drawNodeBox[strand.nodeStart]=newPos;
     }
 }
 
@@ -202,7 +207,7 @@ QVector3D Hair::lengthConstraint(QVector3D p1, QVector3D p2, float length)
 
 QVector3D Hair::transform(QVector3D p)
 {
-    //发根位置变换
+    //位置变换
     QVector4D temp=p.toVector4D();
     return (temp*mMatrix).toVector3D();
 }
