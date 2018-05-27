@@ -53,14 +53,16 @@ protected:
     //发根位置变换
     QVector3D transform(QVector3D p);
 
-    //绘制box,需要和头发节点同步
-    //方便opengl直接绘制
-    QVector<QVector3D> drawNodeBox;
+
 
     //所有头发节点
     QVector<HairNode> nodeBox;
-    //所有发丝
+    //所有发丝骨架
     QVector<HairStrand> strandBox;
+
+    //绘制box,根据骨架展开为三角形
+    //方便opengl直接绘制
+    QVector<QVector3D> drawNodeBox;
 
     //头发节点索引
     //TODO:展开为三角形

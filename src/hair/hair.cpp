@@ -67,12 +67,12 @@ void Hair::init(QVector<QVector3D> &rootPosBox)
         strand.nodeStart=nodeBox.size();
 
         //每根头发节点数量
-        int nodeCount=20;
+        int nodeCount=10;
         auto tempPos=rootPosBox[i];
         while(nodeCount>0)
         {
             HairNode node;
-            if(nodeCount==20)
+            if(nodeCount==10)
             {
                 //首个节点距离上个节点止动长度为0
                 node.length=0;
@@ -80,11 +80,12 @@ void Hair::init(QVector<QVector3D> &rootPosBox)
             }
             else
             {
-                node.length=0.1;
-                tempPos.setY(tempPos.y()+0.1);
+                node.length=0.2;
+                tempPos.setY(tempPos.y()+0.2);
             }
 
             //单个节点质量
+            //TODO:越靠近头皮质点质量越大
             node.mass=10;
 
             node.p0=tempPos;
