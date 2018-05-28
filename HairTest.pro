@@ -22,7 +22,6 @@ SOURCES += src/main.cpp \
     src/mainwindow.cpp \
     src/model.cpp \
     src/openglscene.cpp \
-    src/hair/hair.cpp \
     src/sphere.cpp \
     src/env.cpp \
     src/hair/hairmodel.cpp \
@@ -35,7 +34,6 @@ HEADERS  += \
     src/model.h \
     src/openglscene.h \
     src/stable.h \
-    src/hair/hair.h \
     src/sphere.h \
     src/env.h \
     src/hair/hairmodel.h \

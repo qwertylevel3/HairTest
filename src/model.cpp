@@ -153,22 +153,35 @@ void Model::draw(QOpenGLShaderProgram& shaderProgram)
 
 void Model::update(Env &env, float dt)
 {
+    Q_UNUSED(env);
+    Q_UNUSED(dt);
 
+    arrayBuf.bind();
+    arrayBuf.allocate(getPointsData(), countPoints() * sizeof(QVector3D));
+
+    indexBuf.bind();
+    indexBuf.allocate(getIndicesData(), countIndices()* sizeof(GLuint));
+
+    normalBuf.bind();
+    normalBuf.allocate(getNormalsData(),countNormals()*sizeof(QVector3D));
 }
 
 void Model::rotate(float angle, float x, float y, float z)
 {
-    mMatrix.rotate(angle,x,y,z);
+//    mMatrix.setToIdentity();
+//    mMatrix.rotate(angle,x,y,z);
+    QMatrix4x4 m;
+    m.rotate(angle,x,y,z);
 
-    for(int i=0; i<oriPoints.size(); i++)
+    for(int i=0; i<points.size(); i++)
     {
         QVector4D temp=points[i].toVector4D();
-        points[i]=(temp*mMatrix).toVector3D();
+        points[i]=(temp*m).toVector3D();
     }
-    for(int i=0; i<oriNormals.size(); i++)
+    for(int i=0; i<normals.size(); i++)
     {
         QVector4D temp=normals[i].toVector4D();
-        normals[i]=(temp*mMatrix).toVector3D();
+        normals[i]=(temp*m).toVector3D();
     }
 
     //更新顶点和法向数据

@@ -102,8 +102,6 @@ protected:
     //camera
     Camera camera;
     int angle{0};
-    float modelRotateAngle{0};
-
 };
 
 #endif // OPENGLSCENE_H

@@ -216,28 +216,26 @@ void OpenGLScene::rotateCamera(QMouseEvent *event)
     normalMatrix.rotate(len,0,1,0);
 
     pressPos=releasePos;
-
 }
 
 void OpenGLScene::rotateModel(QMouseEvent *event)
 {
+    releasePos=event->pos();
+    auto vec=releasePos-pressPos;
+    float len=vec.manhattanLength();
+
+    if(pressPos.x()>releasePos.x())
+    {
+        len=-len;
+    }
+    len=len;
+
     for(int i=0; i<modelBox.size(); i++)
     {
-        releasePos=event->pos();
-        auto vec=releasePos-pressPos;
-        float len=vec.manhattanLength();
-
-        if(pressPos.x()>releasePos.x())
-        {
-            len=-len;
-        }
-        len=len/1000;
-        modelRotateAngle+=len;
-
-        modelBox[i]->rotate(modelRotateAngle,0,1,0);
-
-        pressPos=releasePos;
+        modelBox[i]->rotate(len,0,1,0);
     }
+
+    pressPos=releasePos;
 }
 
 void OpenGLScene::changeModelHidden(int index)
@@ -275,7 +273,6 @@ void OpenGLScene::initHeadModel()
     head->load(QString("model/head.obj"));
     head->init();
     modelBox.append(head);
-
 }
 
 void OpenGLScene::initHairModel()
@@ -285,7 +282,6 @@ void OpenGLScene::initHairModel()
     scalp->load(QString("model/hairRoot1.obj"));
     scalp->init();
     modelBox.append(scalp);
-
 }
 
 void OpenGLScene::setAmbiendColor(QVector4D vec)
