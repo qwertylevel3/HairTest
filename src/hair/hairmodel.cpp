@@ -1,6 +1,5 @@
 #include "hairmodel.h"
 #include "env.h"
-//TODO:refactor remove hair
 
 
 HairModel::HairModel()
@@ -62,6 +61,7 @@ bool HairModel::init()
             nodeIndex.append(index+1);
             index++;
         }
+        nodeIndex.append(0xffffffff);
     }
 
 
@@ -71,7 +71,7 @@ bool HairModel::init()
 
     indexBuf.create();
     indexBuf.bind();
-    indexBuf.allocate(getNodeIndexData(),countIndex()*sizeof(GLuint));
+    indexBuf.allocate(getNodeIndexData(),countNodeIndex()*sizeof(GLuint));
 
     //TODO
     //头发每个点的法向量
@@ -84,6 +84,8 @@ bool HairModel::init()
 
 void HairModel::draw(QOpenGLShaderProgram &shaderProgram)
 {
+    glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
+
     normalBuf.bind();
 
     int normalLocation=shaderProgram.attributeLocation("vNormal");
@@ -99,18 +101,18 @@ void HairModel::draw(QOpenGLShaderProgram &shaderProgram)
     shaderProgram.enableAttributeArray(vertexLocation);
     shaderProgram.setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(QVector3D));
 
+    //TODO
+    //纹理
     //    offset += sizeof(QVector3D);
     //
     //    int texcoordLocation = program.attributeLocation("a_texcoord");
     //    program.enableAttributeArray(texcoordLocation);
     //    program.setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
-    //glDrawElements(GL_POINTS, model->indexs(), GL_UNSIGNED_INT, 0);
-    glDrawElements(GL_LINES, countIndices(), GL_UNSIGNED_INT, 0);
-    //    glDrawElements(GL_LINES, model->m_edgeIndices.size(), GL_UNSIGNED_INT, model->m_edgeIndices.data());
+//    glDrawElements(GL_LINE_STRIP, countNodeIndex(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLE_STRIP, countNodeIndex(), GL_UNSIGNED_INT, 0);
 
-    //    glDrawElements(GL_LINES, model->m_edgeIndices.size(), GL_UNSIGNED_INT, model->m_edgeIndices.data());
-
+    glDisable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
 }
 
 void HairModel::update(Env &env, float dt)
@@ -159,10 +161,9 @@ void HairModel::update(Env &env, float dt)
         }
     }
 
-    drawNodeBox.clear();
-
-    //TODO
     //根据头发骨架展开三角形
+    drawNodeBox.clear();
+    nodeIndex.clear();
     for(int i=0; i<strandBox.size(); i++)
     {
         auto strand=strandBox[i];
@@ -173,10 +174,16 @@ void HairModel::update(Env &env, float dt)
             QVector3D pos=hairNode.p1;
 
             drawNodeBox.append(pos);
-            //pos.setZ(pos.z()+0.1);
-            //drawNodeBox.append(pos);
+            pos.setZ(pos.z()+0.1);
+            drawNodeBox.append(pos);
+
+            //展开的三角形索引表
+            nodeIndex.append(j*2);
+            nodeIndex.append(j*2+1);
         }
+        nodeIndex.append(0xffffffff);
     }
+
 
     updateBuf();
 }
@@ -207,7 +214,7 @@ void HairModel::updateBuf()
     arrayBuf.allocate(getDrawNodeData(),countNode()*sizeof(QVector3D));
 
     indexBuf.bind();
-    indexBuf.allocate(getNodeIndexData(),countIndex()*sizeof(GLuint));
+    indexBuf.allocate(getNodeIndexData(),countNodeIndex()*sizeof(GLuint));
 
     normalBuf.bind();
     normalBuf.allocate(getDrawNodeData(),countNode()*sizeof(QVector3D));

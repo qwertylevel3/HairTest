@@ -28,7 +28,7 @@ protected:
     {
         return &nodeIndex[0];
     }
-    int countIndex()
+    int countNodeIndex()
     {
         return nodeIndex.size();
     }
