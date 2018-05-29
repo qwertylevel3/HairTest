@@ -52,8 +52,6 @@ protected:
     void initializeGL() Q_DECL_OVERRIDE;
 
     void initShaders();
-    void initTextures();
-
 
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);

@@ -60,6 +60,18 @@ void OpenGLScene::initializeGL()
 {
     initializeOpenGLFunctions();
 
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glEnable(GL_POLYGON_OFFSET_LINE);
+    glEnable(GL_POLYGON_OFFSET_POINT);
+    glPolygonOffset(0.1,1);
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
     initModel();
     initShaders();
 //    initTextures();
@@ -100,22 +112,6 @@ void OpenGLScene::initShaders()
     }
 }
 
-void OpenGLScene::initTextures()
-{
-    // Load cube.png image
-    texture = new QOpenGLTexture(QImage("test.png").mirrored());
-
-    // Set nearest filtering mode for texture minification
-    texture->setMinificationFilter(QOpenGLTexture::Nearest);
-
-    // Set bilinear filtering mode for texture magnification
-    texture->setMagnificationFilter(QOpenGLTexture::Linear);
-
-    // Wrap texture coordinates by repeating
-    // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
-    texture->setWrapMode(QOpenGLTexture::Repeat);
-}
-
 void OpenGLScene::keyPressEvent(QKeyEvent *event)
 {
     switch(event->key())
@@ -154,6 +150,7 @@ void OpenGLScene::mousePressEvent(QMouseEvent *event)
 
 void OpenGLScene::mouseReleaseEvent(QMouseEvent *event)
 {
+    Q_UNUSED(event);
     mouseFlag=NORMAL;
 }
 
@@ -277,6 +274,7 @@ void OpenGLScene::initHeadModel()
 
 void OpenGLScene::initHairModel()
 {
+
     //头发,由头皮模型生成
     HairModel* scalp=new HairModel();
     scalp->load(QString("model/hairRoot1.obj"));

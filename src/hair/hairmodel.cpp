@@ -9,6 +9,15 @@ HairModel::HairModel()
 
 bool HairModel::init()
 {
+    texture=new QOpenGLTexture(QOpenGLTexture::Target2D);
+    texture->setFormat(QOpenGLTexture::RGBA8U);
+    texture->setData(QImage("texture/hair.png").mirrored());
+    texture->setMinificationFilter(QOpenGLTexture::Nearest);
+    texture->setMagnificationFilter(QOpenGLTexture::Linear);
+    texture->setWrapMode(QOpenGLTexture::Repeat);
+
+
+
     mMatrix.setToIdentity();
     //生成头发节点
     for(int i=0; i<oriPoints.size(); i++)
@@ -57,13 +66,22 @@ bool HairModel::init()
         int index=strandBox[i].nodeStart;
         while(index<strandBox[i].nodeEnd-1)
         {
-            nodeIndex.append(index);
-            nodeIndex.append(index+1);
+            nodeIndexBox.append(index);
+            nodeIndexBox.append(index+1);
             index++;
         }
-        nodeIndex.append(0xffffffff);
+        //图元重启标志点
+        nodeIndexBox.append(0xffffffff);
     }
 
+    for(int i=0; i<drawNodeBox.size(); i++)
+    {
+        texCoordBox.append(QVector2D(0,0));
+    }
+
+    texBuf.create();
+    texBuf.bind();
+    texBuf.allocate(getTexCoordData(),countTexCoord()*sizeof(QVector2D));
 
     arrayBuf.create();
     arrayBuf.bind();
@@ -86,6 +104,9 @@ void HairModel::draw(QOpenGLShaderProgram &shaderProgram)
 {
     glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
 
+    texture->bind();
+    shaderProgram.setUniformValue("texture",0);
+
     normalBuf.bind();
 
     int normalLocation=shaderProgram.attributeLocation("vNormal");
@@ -103,11 +124,12 @@ void HairModel::draw(QOpenGLShaderProgram &shaderProgram)
 
     //TODO
     //纹理
-    //    offset += sizeof(QVector3D);
-    //
-    //    int texcoordLocation = program.attributeLocation("a_texcoord");
-    //    program.enableAttributeArray(texcoordLocation);
-    //    program.setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
+    // program.setUniformValue("vLightPosition",lightPos);
+
+    texBuf.bind();
+    int texcoordLocation = shaderProgram.attributeLocation("vTexCoords");
+    shaderProgram.enableAttributeArray(texcoordLocation);
+    shaderProgram.setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(QVector2D));
 
 //    glDrawElements(GL_LINE_STRIP, countNodeIndex(), GL_UNSIGNED_INT, 0);
     glDrawElements(GL_TRIANGLE_STRIP, countNodeIndex(), GL_UNSIGNED_INT, 0);
@@ -130,8 +152,6 @@ void HairModel::update(Env &env, float dt)
             nodeBox[index].p0=nodeBox[index].p1;
             nodeBox[index].p1=p2;
 
-//            //update draw box
-            drawNodeBox[index]=p2;
         }
     }
 
@@ -163,10 +183,12 @@ void HairModel::update(Env &env, float dt)
 
     //根据头发骨架展开三角形
     drawNodeBox.clear();
-    nodeIndex.clear();
+    nodeIndexBox.clear();
+    texCoordBox.clear();
     for(int i=0; i<strandBox.size(); i++)
     {
         auto strand=strandBox[i];
+        int count=0;
         for(int j=strand.nodeStart; j<strand.nodeEnd; j++)
         {
             //TODO:新加入节点与骨架节点构成三角形面向视口
@@ -178,13 +200,17 @@ void HairModel::update(Env &env, float dt)
             drawNodeBox.append(pos);
 
             //展开的三角形索引表
-            nodeIndex.append(j*2);
-            nodeIndex.append(j*2+1);
+            nodeIndexBox.append(j*2);
+            nodeIndexBox.append(j*2+1);
+            texCoordBox.append(QVector2D(float(count)*0.1,0));
+            texCoordBox.append(QVector2D(float(count)*0.1,1.0));
+            count++;
         }
-        nodeIndex.append(0xffffffff);
+        //图元重启标志点
+        nodeIndexBox.append(0xffffffff);
     }
 
-
+    //更新opengl缓存
     updateBuf();
 }
 
@@ -218,6 +244,9 @@ void HairModel::updateBuf()
 
     normalBuf.bind();
     normalBuf.allocate(getDrawNodeData(),countNode()*sizeof(QVector3D));
+
+    texBuf.bind();
+    texBuf.allocate(getTexCoordData(),countTexCoord()*sizeof(QVector2D));
 }
 
 QVector3D HairModel::calNodeForce(Env &env, int nodeIndex)
@@ -295,7 +324,4 @@ QVector3D HairModel::lengthConstraint(QVector3D p1, QVector3D p2, float length)
     }
 }
 
-QVector3D HairModel::transform(QVector3D p)
-{
 
-}
