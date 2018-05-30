@@ -3,6 +3,7 @@
 #include"math.h"
 #include"line.h"
 #include "hairmodel.h"
+#include"bcurve.h"
 
 
 OpenGLScene::OpenGLScene(QWidget *parent)
@@ -30,9 +31,20 @@ void OpenGLScene::timerEvent(QTimerEvent *e)
 
 bool OpenGLScene::initModel()
 {
-    initSphereModel();
-    initHeadModel();
-    initHairModel();
+//    initSphereModel();
+//    initHeadModel();
+//    initHairModel();
+
+    //头发,由头皮模型生成
+    BCurve* curve=new BCurve();
+    curve->setP1(QVector3D(-2,-1,0));
+    curve->setP2(QVector3D(1,0,0));
+    curve->setP3(QVector3D(3,1,0));
+    curve->setP4(QVector3D(5,3,0));
+    curve->init();
+
+    modelBox.append(curve);
+
     return true;
 }
 
@@ -274,7 +286,6 @@ void OpenGLScene::initHeadModel()
 
 void OpenGLScene::initHairModel()
 {
-
     //头发,由头皮模型生成
     HairModel* scalp=new HairModel();
     scalp->load(QString("model/hairRoot1.obj"));

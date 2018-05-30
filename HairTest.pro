@@ -25,7 +25,8 @@ SOURCES += src/main.cpp \
     src/sphere.cpp \
     src/env.cpp \
     src/hair/hairmodel.cpp \
-    src/line.cpp
+    src/line.cpp \
+    src/bcurve.cpp
 
 HEADERS  += \
     src/hair/hairnode.h \
@@ -37,7 +38,8 @@ HEADERS  += \
     src/sphere.h \
     src/env.h \
     src/hair/hairmodel.h \
-    src/line.h
+    src/line.h \
+    src/bcurve.h
 
 FORMS += \
     ui/mainwindow.ui
