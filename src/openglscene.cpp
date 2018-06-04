@@ -31,19 +31,19 @@ void OpenGLScene::timerEvent(QTimerEvent *e)
 
 bool OpenGLScene::initModel()
 {
-//    initSphereModel();
-//    initHeadModel();
-//    initHairModel();
+    initCoord();
+    initSphereModel();
+    initHeadModel();
+    initHairModel();
 
-    //头发,由头皮模型生成
-    BCurve* curve=new BCurve();
-    curve->setP1(QVector3D(-2,-1,0));
-    curve->setP2(QVector3D(1,0,0));
-    curve->setP3(QVector3D(3,1,0));
-    curve->setP4(QVector3D(5,3,0));
-    curve->init();
-
-    modelBox.append(curve);
+//    BCurve* curve=new BCurve();
+//    curve->setP1(QVector3D(-2,-1,0));
+//    curve->setP2(QVector3D(1,0,0));
+//    curve->setP3(QVector3D(3,1,0));
+//    curve->setP4(QVector3D(5,3,0));
+//    curve->init();
+//
+//    modelBox.append(curve);
 
     return true;
 }
@@ -77,7 +77,7 @@ void OpenGLScene::initializeGL()
     glEnable(GL_POLYGON_OFFSET_POINT);
     glPolygonOffset(0.1,1);
 
-    glEnable(GL_DEPTH_TEST);
+//    glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
     glEnable(GL_BLEND);
@@ -88,10 +88,9 @@ void OpenGLScene::initializeGL()
     initShaders();
 //    initTextures();
 
-    vMatrix.translate(0.0, 0.0, -5.0);
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+//    glEnable(GL_CULL_FACE);
 }
 void OpenGLScene::initShaders()
 {
@@ -256,6 +255,27 @@ void OpenGLScene::changeModelHidden(int index)
     }
     bool flag=modelBox[index]->isHide();
     modelBox[index]->setHide(!flag);
+}
+
+void OpenGLScene::initCoord()
+{
+    Line* x=new Line();
+    x->setP1(QVector3D(0,0,0));
+    x->setP2(QVector3D(10,0,0));
+    x->init();
+    this->modelBox.append(x);
+
+    Line* y=new Line();
+    y->setP1(QVector3D(0,0,0));
+    y->setP2(QVector3D(0,10,0));
+    y->init();
+    this->modelBox.append(y);
+
+    Line* z=new Line();
+    z->setP1(QVector3D(0,0,0));
+    z->setP2(QVector3D(0,0,10));
+    z->init();
+    this->modelBox.append(z);
 }
 
 void OpenGLScene::initSphereModel()

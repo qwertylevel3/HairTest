@@ -98,6 +98,11 @@ void BCurve::setP4(QVector3D p)
     p4=p;
 }
 
+QVector<QVector3D> &BCurve::getCurPointsRef()
+{
+    return points;
+}
+
 QVector3D BCurve::fun(float t)
 {
     QVector4D temp;

@@ -64,6 +64,7 @@ protected:
     void changeModelHidden(int index);
 
 
+    void initCoord();
     void initSphereModel();
     void initHeadModel();
     void initHairModel();

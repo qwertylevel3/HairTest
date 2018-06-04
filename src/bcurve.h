@@ -15,6 +15,8 @@ public:
     void setP2(QVector3D p);
     void setP3(QVector3D p);
     void setP4(QVector3D p);
+
+    QVector<QVector3D> &getCurPointsRef();
 protected:
     //函数曲线
     QVector3D fun(float t);

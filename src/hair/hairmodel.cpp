@@ -16,8 +16,6 @@ bool HairModel::init()
     texture->setMagnificationFilter(QOpenGLTexture::Linear);
     texture->setWrapMode(QOpenGLTexture::Repeat);
 
-
-
     mMatrix.setToIdentity();
     //生成头发节点
     for(int i=0; i<oriPoints.size(); i++)
