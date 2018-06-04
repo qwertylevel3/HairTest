@@ -43,13 +43,14 @@ bool HairModel::init()
             }
 
             //单个节点质量
-            //TODO:越靠近头皮质点质量越大
-            node.mass=10;
+            node.mass=nodeCount+1;
 
             node.p0=tempPos;
             node.p1=tempPos;
             nodeBox.push_back(node);
             drawNodeBox.push_back(tempPos);
+
+
 
             nodeCount--;
         }
@@ -76,6 +77,24 @@ bool HairModel::init()
     {
         texCoordBox.append(QVector2D(0,0));
     }
+
+    //每个节点的偏向力
+    for(int i=0; i<nodeBox.size(); i++)
+    {
+        QVector3D randVec;
+        randVec.setX(rand()%10-5);
+        randVec.setY(rand()%10-5);
+        randVec.setZ(rand()%10-5);
+
+        rfBox.append(randVec);
+    }
+
+    for(int i=0; i<strandBox.size(); i++)
+    {
+        float rz=rand()%100-50;
+        rzBox.append(rz/1000.0);
+    }
+
 
     texBuf.create();
     texBuf.bind();
@@ -187,6 +206,7 @@ void HairModel::update(Env &env, float dt)
     {
         auto strand=strandBox[i];
         int count=0;
+        float rz=rzBox[i];
         for(int j=strand.nodeStart; j<strand.nodeEnd; j++)
         {
             //TODO:新加入节点与骨架节点构成三角形面向视口
@@ -194,7 +214,7 @@ void HairModel::update(Env &env, float dt)
             QVector3D pos=hairNode.p1;
 
             drawNodeBox.append(pos);
-            pos.setZ(pos.z()+0.1);
+            pos.setZ(pos.z()+rz+0.1*(10.0-float(count))/10.0);
             drawNodeBox.append(pos);
 
             //展开的三角形索引表
@@ -262,11 +282,7 @@ QVector3D HairModel::calNodeForce(Env &env, int nodeIndex)
     vec.setZ(wind.z());
 
     //随机误差
-    QVector3D randVec;
-    randVec.setX(rand()%1);
-    randVec.setY(rand()%1);
-    randVec.setZ(rand()%1);
-
+   QVector3D randVec=rfBox[nodeIndex];
     vec+=randVec;
 
     float gravity=nodeBox[nodeIndex].mass*9.8;

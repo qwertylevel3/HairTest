@@ -57,6 +57,13 @@ protected:
 
     //所有头发骨架节点
     QVector<HairNode> nodeBox;
+
+    //所有头发节点的随机力扰动
+    QVector<QVector3D> rfBox;
+
+    //发丝展开随机偏移量
+    QVector<float> rzBox;
+
     //所有发丝骨架
     QVector<HairStrand> strandBox;
 
