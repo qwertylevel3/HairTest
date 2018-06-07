@@ -32,14 +32,7 @@ protected:
     {
         return nodeIndexBox.size();
     }
-    void* getTexCoordData()
-    {
-        return &texCoordBox[0];
-    }
-    int countTexCoord()
-    {
-        return texCoordBox.size();
-    }
+
 
 
     void updateBuf();
@@ -71,22 +64,11 @@ protected:
     //方便opengl直接绘制
     QVector<QVector3D> drawNodeBox;
 
-    //纹理坐标位置
-    QVector<QVector2D> texCoordBox;
+
 
     //头发节点索引
     //TODO:展开为三角形
     QVector<GLuint> nodeIndexBox;
-
-    QOpenGLTexture* texture;
-
-//    QOpenGLBuffer texBuf{QOpenGLBuffer::PixelPackBuffer};
-    QOpenGLBuffer texBuf{QOpenGLBuffer::VertexBuffer};
-//     VertexBuffer       = 0x8892, // GL_ARRAY_BUFFER
-//    IndexBuffer         = 0x8893, // GL_ELEMENT_ARRAY_BUFFER
-//    PixelPackBuffer     = 0x88EB, // GL_PIXEL_PACK_BUFFER
-//    PixelUnpackBuffer   = 0x88EC  // GL_PIXEL_UNPACK_BUFFER
-
 };
 
 #endif // HAIRMODEL_H

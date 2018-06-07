@@ -1,10 +1,9 @@
-#include "openglscene.h"
+#include"openglscene.h"
 #include"sphere.h"
 #include"math.h"
 #include"line.h"
-#include "hairmodel.h"
+#include"hairmodel.h"
 #include"bcurve.h"
-
 
 OpenGLScene::OpenGLScene(QWidget *parent)
     : QOpenGLWidget(parent)
@@ -36,14 +35,14 @@ bool OpenGLScene::initModel()
     initHeadModel();
     initHairModel();
 
-//    BCurve* curve=new BCurve();
-//    curve->setP1(QVector3D(-2,-1,0));
-//    curve->setP2(QVector3D(1,0,0));
-//    curve->setP3(QVector3D(3,1,0));
-//    curve->setP4(QVector3D(5,3,0));
-//    curve->init();
-//
-//    modelBox.append(curve);
+    //    BCurve* curve=new BCurve();
+    //    curve->setP1(QVector3D(-2,-1,0));
+    //    curve->setP2(QVector3D(1,0,0));
+    //    curve->setP3(QVector3D(3,1,0));
+    //    curve->setP4(QVector3D(5,3,0));
+    //    curve->init();
+    //
+    //    modelBox.append(curve);
 
     return true;
 }
@@ -79,7 +78,7 @@ void OpenGLScene::initializeGL()
     glEnable(GL_POLYGON_OFFSET_POINT);
     glPolygonOffset(0.1,1);
 
-//    glEnable(GL_DEPTH_TEST);
+    //    glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
     glEnable(GL_BLEND);
@@ -88,11 +87,11 @@ void OpenGLScene::initializeGL()
 
     initModel();
     initShaders();
-//    initTextures();
+    //    initTextures();
 
 
     glEnable(GL_DEPTH_TEST);
-//    glEnable(GL_CULL_FACE);
+    //    glEnable(GL_CULL_FACE);
 }
 void OpenGLScene::initShaders()
 {
@@ -149,7 +148,7 @@ void OpenGLScene::mousePressEvent(QMouseEvent *event)
     if(event->button()==Qt::RightButton)
     {
         mouseFlag=ROTATECAMERA;
-//        mouseMoveEvent(event);
+        //        mouseMoveEvent(event);
     }
     else if(event->button()==Qt::MidButton)
     {
@@ -284,17 +283,19 @@ void OpenGLScene::initSphereModel()
 {
     //碰撞球
     Sphere* sphere1=new Sphere();
+    sphere1->setTexture("texture/rect.png");
     sphere1->load(QString("model/sphere.obj"));
     sphere1->init();
     env.sphereBox.append(sphere1);
     modelBox.append(sphere1);
 
-//    //碰撞球
-//    Sphere* sphere2=new Sphere();
-//    sphere2->load(QString("model/sphere2.obj"));
-//    sphere2->init();
-//    env.sphereBox.append(sphere2);
-//    modelBox.append(sphere2);
+    //碰撞球
+    Sphere* sphere2=new Sphere();
+    sphere2->setTexture("texture/rect.png");
+    sphere2->load(QString("model/sphere2.obj"));
+    sphere2->init();
+    env.sphereBox.append(sphere2);
+    modelBox.append(sphere2);
 }
 
 void OpenGLScene::initHeadModel()
@@ -302,6 +303,7 @@ void OpenGLScene::initHeadModel()
     //上半身人头模型
     Model* head=new Model();
     head->load(QString("model/head.obj"));
+    head->setTexture("texture/rect.png");
     head->init();
     modelBox.append(head);
 }
@@ -356,8 +358,8 @@ void OpenGLScene::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //绑定纹理
-//    texture->bind();
-//    program.setUniformValue("texture", 0);
+    //    texture->bind();
+    //    program.setUniformValue("texture", 0);
 
 
     QMatrix3x3 tempMatrix=normalMatrix.toGenericMatrix< 3,3 >();

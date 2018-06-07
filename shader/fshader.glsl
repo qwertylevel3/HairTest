@@ -28,7 +28,8 @@ void main()
     gl_FragColor+=ambientColor;
 
     //镜面光
-    vec3 vReflection= normalize(reflect(-normalize(vVaryingLightDir),normalize(vVaryingNormal)));
+    vec3 vReflection= normalize(reflect(-normalize(vVaryingLightDir),
+                                        normalize(vVaryingNormal)));
 
     float spec = max(0.0,dot(normalize(vVaryingNormal),vReflection));
 

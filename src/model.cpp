@@ -122,6 +122,16 @@ bool Model::init()
 
 void Model::draw(QOpenGLShaderProgram& shaderProgram)
 {
+
+    if(texture)
+    {
+        texture->bind();
+        shaderProgram.setUniformValue("texture",0);
+    }
+
+
+
+
     normalBuf.bind();
 
     int normalLocation=shaderProgram.attributeLocation("vNormal");
@@ -136,6 +146,15 @@ void Model::draw(QOpenGLShaderProgram& shaderProgram)
     int vertexLocation = shaderProgram.attributeLocation("vVertex");
     shaderProgram.enableAttributeArray(vertexLocation);
     shaderProgram.setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(QVector3D));
+
+    if(texture)
+    {
+        texBuf.bind();
+        int texcoordLocation = shaderProgram.attributeLocation("vTexCoords");
+        shaderProgram.enableAttributeArray(texcoordLocation);
+        shaderProgram.setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(QVector2D));
+    }
+
 
     //    offset += sizeof(QVector3D);
     //
@@ -164,6 +183,12 @@ void Model::update(Env &env, float dt)
 
     normalBuf.bind();
     normalBuf.allocate(getNormalsData(),countNormals()*sizeof(QVector3D));
+
+    if(texture)
+    {
+        texBuf.bind();
+        texBuf.allocate(getTexCoordData(),countTexCoord()*sizeof(QVector2D));
+    }
 }
 
 void Model::rotate(float angle, float x, float y, float z)
@@ -190,6 +215,23 @@ void Model::rotate(float angle, float x, float y, float z)
 
     normalBuf.bind();
     normalBuf.allocate(getNormalsData(),countNormals()*sizeof(QVector3D));
+}
+
+void Model::setTexture(const QString &texPath)
+{
+    texture=new QOpenGLTexture(QOpenGLTexture::Target2D);
+    texture->setFormat(QOpenGLTexture::RGBA8U);
+    texture->setData(QImage(texPath).mirrored());
+    texture->setMinificationFilter(QOpenGLTexture::Nearest);
+    texture->setMagnificationFilter(QOpenGLTexture::Linear);
+    texture->setWrapMode(QOpenGLTexture::Repeat);
+
+    texCoordBox.append(QVector2D(0,0));
+    texCoordBox.append(QVector2D(1,1));
+
+    texBuf.create();
+    texBuf.bind();
+    texBuf.allocate(getTexCoordData(),countTexCoord()*sizeof(QVector2D));
 }
 
 void Model::setMatrix(const QMatrix4x4 &matrix)

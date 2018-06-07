@@ -25,6 +25,8 @@ public:
     //旋转
     virtual void rotate(float angle,float x,float y,float z);
 
+    void setTexture(const QString& texPath);
+
     QString fileName() const
     {
         return m_fileName;
@@ -82,6 +84,15 @@ public:
     {
         hide=h;
     }
+
+    void* getTexCoordData()
+    {
+        return &texCoordBox[0];
+    }
+    int countTexCoord()
+    {
+        return texCoordBox.size();
+    }
 protected:
     QString m_fileName;//文件名
     QVector<QVector3D> oriPoints;//顶点信息
@@ -98,5 +109,18 @@ protected:
     QMatrix4x4 mMatrix;
 
     bool hide{false};
+
+    QOpenGLTexture* texture{nullptr};
+    QOpenGLBuffer texBuf{QOpenGLBuffer::VertexBuffer};
+//    QOpenGLBuffer texBuf{QOpenGLBuffer::PixelPackBuffer};
+
+//     VertexBuffer       = 0x8892, // GL_ARRAY_BUFFER
+//    IndexBuffer         = 0x8893, // GL_ELEMENT_ARRAY_BUFFER
+//    PixelPackBuffer     = 0x88EB, // GL_PIXEL_PACK_BUFFER
+//    PixelUnpackBuffer   = 0x88EC  // GL_PIXEL_UNPACK_BUFFER
+
+    //纹理坐标位置
+    QVector<QVector2D> texCoordBox;
+
 };
 #endif // MODEL_H

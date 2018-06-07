@@ -21,12 +21,15 @@ out vec2 vVaryingTexCoords;
 
 void main()
 {
+    //法线向量
     vVaryingNormal=normalMatrix*vNormal;
 
     vec4 vPosition4=mMatrix*vMatrix*vVertex;
     vec3 vPosition3=vPosition4.xyz/vPosition4.w;
 
+    //到光线的单位向量
     vVaryingLightDir=normalize(vLightPosition-vPosition3);
+
     vVaryingTexCoords=vTexCoords;
 
     gl_Position=pMatrix*vMatrix*mMatrix*vVertex;
