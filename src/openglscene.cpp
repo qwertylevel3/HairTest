@@ -373,6 +373,8 @@ void OpenGLScene::paintGL()
     program.setUniformValue("diffuseColor", diffuseColor);
     program.setUniformValue("specularColor", specularColor);
 
+    program.setUniformValue("cameraPos",camera.pos);
+
 
     for(int i=0; i<modelBox.size(); i++)
     {

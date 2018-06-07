@@ -14,10 +14,12 @@ uniform mat4 vMatrix;
 uniform mat4 mMatrix;
 uniform mat3 normalMatrix;
 uniform vec3 vLightPosition;
+uniform vec3 cameraPos;
 
 out vec3 vVaryingNormal;
 out vec3 vVaryingLightDir;
 out vec2 vVaryingTexCoords;
+out vec3 vVaryingView;
 
 void main()
 {
@@ -31,6 +33,10 @@ void main()
     vVaryingLightDir=normalize(vLightPosition-vPosition3);
 
     vVaryingTexCoords=vTexCoords;
+
+    vec3 vVertex3=vVertex.xyz;
+
+    vVaryingView=normalize(cameraPos-vVertex3);
 
     gl_Position=pMatrix*vMatrix*mMatrix*vVertex;
 }

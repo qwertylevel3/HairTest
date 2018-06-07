@@ -8,9 +8,11 @@
 uniform vec4 ambientColor;
 uniform vec4 diffuseColor;
 uniform vec4 specularColor;
+
 in vec3 vVaryingNormal;
 in vec3 vVaryingLightDir;
 in vec2 vVaryingTexCoords;
+in vec3 vVaryingView;
 
 uniform sampler2D texture;
 
@@ -27,11 +29,13 @@ void main()
     //环境光
     gl_FragColor+=ambientColor;
 
-    //镜面光
-    vec3 vReflection= normalize(reflect(-normalize(vVaryingLightDir),
-                                        normalize(vVaryingNormal)));
+//    //镜面光
+//    vec3 vReflection= normalize(reflect(-normalize(vVaryingLightDir),normalize(vVaryingNormal)));
+//    float spec = max(0.0,dot(normalize(vVaryingNormal),vReflection));
 
-    float spec = max(0.0,dot(normalize(vVaryingNormal),vReflection));
+//    //镜面光
+    vec3 vHalf= normalize(vVaryingLightDir+vVaryingView);
+    float spec = max(0.0,dot(normalize(vVaryingNormal),vHalf));
 
     if(diff!=0)
     {
