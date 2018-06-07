@@ -95,29 +95,33 @@ void OpenGLScene::initializeGL()
 }
 void OpenGLScene::initShaders()
 {
-    // Compile vertex shader
-    if (!program.addShaderFromSourceFile(QOpenGLShader::Vertex, "shader/vshader.glsl"))
-    {
-        qDebug()<<program.log();
-        exit(-1);
-    }
+    phongShaderV=new QOpenGLShader(QOpenGLShader::Vertex);
+    phongShaderF=new QOpenGLShader(QOpenGLShader::Fragment);
 
-    // Compile fragment shader
-    if (!program.addShaderFromSourceFile(QOpenGLShader::Fragment, "shader/fshader.glsl"))
+    bool flag=true;
+    do
     {
-        qDebug()<<program.log();
-        exit(-1);
-    }
+        flag=phongShaderV->compileSourceFile("shader/phongV.glsl");
+        if(!flag) break;
 
-    // Link shader pipeline
-    if (!program.link())
-    {
-        qDebug()<<program.log();
-        exit(-1);
-    }
+        flag=phongShaderF->compileSourceFile("shader/phongF.glsl");
+        if(!flag) break;
 
-    // Bind shader pipeline for use
-    if (!program.bind())
+        flag=program.addShader(phongShaderV);
+        if(!flag) break;
+
+        flag=program.addShader(phongShaderF);
+        if(!flag) break;
+
+        flag=program.link();
+        if(!flag) break;
+
+        flag=program.bind();
+        if(!flag) break;
+    }
+    while(0);
+
+    if(!flag)
     {
         qDebug()<<program.log();
         exit(-1);
@@ -356,11 +360,6 @@ void OpenGLScene::update()
 void OpenGLScene::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    //绑定纹理
-    //    texture->bind();
-    //    program.setUniformValue("texture", 0);
-
 
     QMatrix3x3 tempMatrix=normalMatrix.toGenericMatrix< 3,3 >();
 

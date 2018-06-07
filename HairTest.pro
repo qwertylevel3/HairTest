@@ -50,7 +50,7 @@ INCLUDEPATH += $$PWD\src\hair\
 INCLUDEPATH += $$PWD\ui\
 
 DISTFILES += \
-    shader/fshader.glsl \
-    shader/vshader.glsl
+    shader/phongV.glsl \
+    shader/phongF.glsl
 
 

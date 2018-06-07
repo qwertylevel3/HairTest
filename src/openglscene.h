@@ -101,6 +101,10 @@ protected:
     //camera
     Camera camera;
     int angle{0};
+
+    //shader
+    QOpenGLShader* phongShaderV;
+    QOpenGLShader* phongShaderF;
 };
 
 #endif // OPENGLSCENE_H

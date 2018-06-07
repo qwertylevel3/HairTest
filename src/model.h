@@ -7,11 +7,20 @@
 
 class Env;
 
+
+enum ShaderType
+{
+    Phong,KK
+};
+
 class Model:public QOpenGLFunctions
 {
 public:
     Model();
     ~Model();
+
+
+
     bool load(const QString &filePath);
     //根据point，indexs,normals初始化buf
     virtual bool init();
@@ -93,6 +102,8 @@ public:
     {
         return texCoordBox.size();
     }
+    ShaderType getShaderType() const;
+    void setShaderType(const ShaderType &value);
 protected:
     QString m_fileName;//文件名
     QVector<QVector3D> oriPoints;//顶点信息
@@ -122,5 +133,6 @@ protected:
     //纹理坐标位置
     QVector<QVector2D> texCoordBox;
 
+    ShaderType shaderType{Phong};
 };
 #endif // MODEL_H

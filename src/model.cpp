@@ -239,6 +239,16 @@ void Model::setMatrix(const QMatrix4x4 &matrix)
     mMatrix = matrix;
 }
 
+ShaderType Model::getShaderType() const
+{
+    return shaderType;
+}
+
+void Model::setShaderType(const ShaderType &value)
+{
+    shaderType = value;
+}
+
 Model::Model()
 {
     initializeOpenGLFunctions();
