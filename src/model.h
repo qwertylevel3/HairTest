@@ -10,7 +10,7 @@ class Env;
 
 enum ShaderType
 {
-    Phong,KK
+    Empty,Phong,KK
 };
 
 class Model:public QOpenGLFunctions
@@ -133,6 +133,6 @@ protected:
     //纹理坐标位置
     QVector<QVector2D> texCoordBox;
 
-    ShaderType shaderType{Phong};
+    ShaderType shaderType{KK};
 };
 #endif // MODEL_H

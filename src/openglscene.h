@@ -1,6 +1,7 @@
 #ifndef OPENGLSCENE_H
 #define OPENGLSCENE_H
 
+
 #include"stable.h"
 #include"model.h"
 #include"sphere.h"
@@ -52,6 +53,10 @@ protected:
     void initializeGL() Q_DECL_OVERRIDE;
 
     void initShaders();
+    void initPhongShader();
+    void initKKShader();
+    void bindPhongShader(Model* model);
+    void bindKKShader(Model* model);
 
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
@@ -89,7 +94,7 @@ protected:
     QMatrix4x4 vMatrix;
     QMatrix4x4 normalMatrix;
 
-    //phong 关照
+    //phong 光照
     QVector4D ambiendColor;
     QVector4D diffuseColor;
     QVector4D specularColor;
@@ -105,6 +110,11 @@ protected:
     //shader
     QOpenGLShader* phongShaderV;
     QOpenGLShader* phongShaderF;
+
+    QOpenGLShader* kkShaderV;
+    QOpenGLShader* kkShaderF;
+
+    ShaderType curShader{Empty};
 };
 
 #endif // OPENGLSCENE_H

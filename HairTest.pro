@@ -51,6 +51,8 @@ INCLUDEPATH += $$PWD\ui\
 
 DISTFILES += \
     shader/phongV.glsl \
-    shader/phongF.glsl
+    shader/phongF.glsl \
+    shader/kkV.vert \
+    shader/kkF.frag
 
 

@@ -16,6 +16,7 @@ OpenGLScene::OpenGLScene(QWidget *parent)
 
     this->setFormat(format);
     this->setEnabled(true);
+
 }
 
 OpenGLScene::~OpenGLScene()
@@ -95,6 +96,12 @@ void OpenGLScene::initializeGL()
 }
 void OpenGLScene::initShaders()
 {
+    initPhongShader();
+    initKKShader();
+}
+
+void OpenGLScene::initPhongShader()
+{
     phongShaderV=new QOpenGLShader(QOpenGLShader::Vertex);
     phongShaderF=new QOpenGLShader(QOpenGLShader::Fragment);
 
@@ -106,18 +113,6 @@ void OpenGLScene::initShaders()
 
         flag=phongShaderF->compileSourceFile("shader/phongF.glsl");
         if(!flag) break;
-
-        flag=program.addShader(phongShaderV);
-        if(!flag) break;
-
-        flag=program.addShader(phongShaderF);
-        if(!flag) break;
-
-        flag=program.link();
-        if(!flag) break;
-
-        flag=program.bind();
-        if(!flag) break;
     }
     while(0);
 
@@ -126,6 +121,135 @@ void OpenGLScene::initShaders()
         qDebug()<<program.log();
         exit(-1);
     }
+}
+
+void OpenGLScene::initKKShader()
+{
+    kkShaderV=new QOpenGLShader(QOpenGLShader::Vertex);
+    kkShaderF=new QOpenGLShader(QOpenGLShader::Fragment);
+
+    bool flag=true;
+    do
+    {
+        flag=kkShaderV->compileSourceFile("shader/kkV.vert");
+        if(!flag) break;
+
+        flag=kkShaderF->compileSourceFile("shader/kkF.frag");
+        if(!flag) break;
+
+    }
+    while(0);
+
+    if(!flag)
+    {
+        qDebug()<<program.log();
+        exit(-1);
+    }
+}
+
+void OpenGLScene::bindPhongShader(Model *model)
+{
+    if(curShader!=Phong)
+    {
+//        program.release();
+        bool flag=true;
+        do
+        {
+            if(curShader==KK)
+            {
+                program.release();
+            }
+
+            flag=program.addShader(phongShaderV);
+            if(!flag) break;
+
+            flag=program.addShader(phongShaderF);
+            if(!flag) break;
+
+            flag=program.link();
+            if(!flag) break;
+
+            flag=program.bind();
+            if(!flag) break;
+        }
+        while(0);
+
+        if(!flag)
+        {
+            qDebug()<<program.log();
+            exit(-1);
+        }
+        curShader=Phong;
+    }
+
+
+    QMatrix3x3 tempMatrix=normalMatrix.toGenericMatrix< 3,3 >();
+
+    program.setUniformValue("pMatrix", projection);
+    program.setUniformValue("vMatrix", vMatrix);
+    program.setUniformValue("normalMatrix",tempMatrix);
+    program.setUniformValue("vLightPosition",lightPos);
+
+    program.setUniformValue("ambientColor", ambiendColor);
+    program.setUniformValue("diffuseColor", diffuseColor);
+    program.setUniformValue("specularColor", specularColor);
+
+    program.setUniformValue("cameraPos",camera.pos);
+
+    program.setUniformValue("mMatrix", model->getMatrix());
+}
+
+void OpenGLScene::bindKKShader(Model *model)
+{
+    if(curShader!=KK)
+    {
+//        program.release();
+        bool flag=true;
+        do
+        {
+            if(curShader==Phong)
+            {
+                program.release();
+            }
+
+
+            flag=program.addShader(kkShaderV);
+            if(!flag) break;
+
+            flag=program.addShader(kkShaderF);
+            if(!flag) break;
+
+            flag=program.link();
+            if(!flag) break;
+
+            flag=program.bind();
+            if(!flag) break;
+        }
+        while(0);
+
+        if(!flag)
+        {
+            qDebug()<<program.log();
+            exit(-1);
+        }
+        curShader=KK;
+    }
+
+
+    QMatrix3x3 tempMatrix=normalMatrix.toGenericMatrix< 3,3 >();
+
+    program.setUniformValue("pMatrix", projection);
+    program.setUniformValue("vMatrix", vMatrix);
+    program.setUniformValue("normalMatrix",tempMatrix);
+    program.setUniformValue("vLightPosition",lightPos);
+
+    program.setUniformValue("ambientColor", ambiendColor);
+    program.setUniformValue("diffuseColor", diffuseColor);
+    program.setUniformValue("specularColor", specularColor);
+
+    program.setUniformValue("cameraPos",camera.pos);
+
+    program.setUniformValue("mMatrix", model->getMatrix());
 }
 
 void OpenGLScene::keyPressEvent(QKeyEvent *event)
@@ -361,25 +485,18 @@ void OpenGLScene::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    QMatrix3x3 tempMatrix=normalMatrix.toGenericMatrix< 3,3 >();
-
-    program.setUniformValue("pMatrix", projection);
-    program.setUniformValue("vMatrix", vMatrix);
-    program.setUniformValue("normalMatrix",tempMatrix);
-    program.setUniformValue("vLightPosition",lightPos);
-
-    program.setUniformValue("ambientColor", ambiendColor);
-    program.setUniformValue("diffuseColor", diffuseColor);
-    program.setUniformValue("specularColor", specularColor);
-
-    program.setUniformValue("cameraPos",camera.pos);
-
-
     for(int i=0; i<modelBox.size(); i++)
     {
-        program.setUniformValue("mMatrix", modelBox[i]->getMatrix());
         if(!modelBox[i]->isHide())
         {
+            if(modelBox[i]->getShaderType()==ShaderType::Phong)
+            {
+                bindPhongShader(modelBox[i]);
+            }
+            else
+            {
+                bindKKShader(modelBox[i]);
+            }
             modelBox[i]->draw(program);
         }
     }

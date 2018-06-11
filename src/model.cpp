@@ -125,8 +125,8 @@ void Model::draw(QOpenGLShaderProgram& shaderProgram)
 
     if(texture)
     {
-        texture->bind();
         shaderProgram.setUniformValue("texture",0);
+        texture->bind(0);
     }
 
 

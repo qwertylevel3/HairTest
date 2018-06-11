@@ -33,6 +33,16 @@ protected:
         return nodeIndexBox.size();
     }
 
+    void* getTangentData()
+    {
+        return &tangentBox[0];
+    }
+    int countTangent()
+    {
+        return tangentBox.size();
+    }
+
+
 
 
     void updateBuf();
@@ -64,11 +74,19 @@ protected:
     //方便opengl直接绘制
     QVector<QVector3D> drawNodeBox;
 
+    //发丝切向方向
+    QVector<QVector3D> tangentBox;
 
+    //切线缓存
+    QOpenGLBuffer tangentBuf;
 
     //头发节点索引
     //TODO:展开为三角形
     QVector<GLuint> nodeIndexBox;
+
+    //头发光偏向纹理
+    QOpenGLTexture* hairTexture{nullptr};
+    QOpenGLBuffer hairTexBuf{QOpenGLBuffer::VertexBuffer};
 };
 
 #endif // HAIRMODEL_H

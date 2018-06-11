@@ -4,7 +4,7 @@
 
 HairModel::HairModel()
 {
-
+    this->setShaderType(ShaderType::KK);
 }
 
 bool HairModel::init()
@@ -15,6 +15,14 @@ bool HairModel::init()
     texture->setMinificationFilter(QOpenGLTexture::Nearest);
     texture->setMagnificationFilter(QOpenGLTexture::Linear);
     texture->setWrapMode(QOpenGLTexture::Repeat);
+
+
+    hairTexture=new QOpenGLTexture(QOpenGLTexture::Target2D);
+    hairTexture->setFormat(QOpenGLTexture::RGBA8U);
+    hairTexture->setData(QImage("texture/test.png").mirrored());
+    hairTexture->setMinificationFilter(QOpenGLTexture::Nearest);
+    hairTexture->setMagnificationFilter(QOpenGLTexture::Linear);
+    hairTexture->setWrapMode(QOpenGLTexture::Repeat);
 
     mMatrix.setToIdentity();
     //生成头发节点
@@ -50,8 +58,6 @@ bool HairModel::init()
             nodeBox.push_back(node);
             drawNodeBox.push_back(tempPos);
 
-
-
             nodeCount--;
         }
 
@@ -76,6 +82,10 @@ bool HairModel::init()
     for(int i=0; i<drawNodeBox.size(); i++)
     {
         texCoordBox.append(QVector2D(0,0));
+
+        tangentBox.append(QVector3D(0,0,0));
+
+        normals.append(QVector3D(0,0,0));
     }
 
     //每个节点的偏向力
@@ -112,7 +122,12 @@ bool HairModel::init()
     //头发每个点的法向量
     normalBuf.create();
     normalBuf.bind();
-    normalBuf.allocate(getDrawNodeData(),countNode()*sizeof(QVector3D));
+    normalBuf.allocate(getNormalsData(),countNormals()*sizeof(QVector3D));
+
+
+    tangentBuf.create();
+    tangentBuf.bind();
+    tangentBuf.allocate(getTangentData(),countTangent()*sizeof(QVector3D));
 
     return true;
 }
@@ -121,8 +136,12 @@ void HairModel::draw(QOpenGLShaderProgram &shaderProgram)
 {
     glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
 
-    texture->bind();
-    shaderProgram.setUniformValue("texture",0);
+
+    shaderProgram.setUniformValue("texture",1);
+    texture->bind(1);
+
+    shaderProgram.setUniformValue("hairTexture",2);
+    hairTexture->bind(2);
 
     normalBuf.bind();
 
@@ -139,17 +158,24 @@ void HairModel::draw(QOpenGLShaderProgram &shaderProgram)
     shaderProgram.enableAttributeArray(vertexLocation);
     shaderProgram.setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(QVector3D));
 
-    //TODO
-    //纹理
-    // program.setUniformValue("vLightPosition",lightPos);
-
     texBuf.bind();
     int texcoordLocation = shaderProgram.attributeLocation("vTexCoords");
     shaderProgram.enableAttributeArray(texcoordLocation);
     shaderProgram.setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(QVector2D));
 
+    tangentBuf.bind();
+    int tangentLocation=shaderProgram.attributeLocation("vTangent");
+    shaderProgram.enableAttributeArray(tangentLocation);
+    shaderProgram.setAttributeBuffer(tangentLocation, GL_FLOAT, offset, 3, sizeof(QVector3D));
+
+
+
 //    glDrawElements(GL_LINE_STRIP, countNodeIndex(), GL_UNSIGNED_INT, 0);
     glDrawElements(GL_TRIANGLE_STRIP, countNodeIndex(), GL_UNSIGNED_INT, 0);
+
+
+    texture->release();
+    hairTexture->release();
 
     glDisable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
 }
@@ -181,7 +207,10 @@ void HairModel::update(Env &env, float dt)
         {
             iterationCount--;
 
+
             HairStrand strand=strandBox[i];
+
+
             for(int index=strand.nodeStart+1; index<strand.nodeEnd; index++)
             {
                 auto na=nodeBox[index-1];
@@ -194,6 +223,7 @@ void HairModel::update(Env &env, float dt)
                 nb.p1=lengthConstraint(na.p1,nb.p1,nb.length);
                 nodeBox[index].p1=nb.p1;
 
+
             }
         }
     }
@@ -202,6 +232,8 @@ void HairModel::update(Env &env, float dt)
     drawNodeBox.clear();
     nodeIndexBox.clear();
     texCoordBox.clear();
+    tangentBox.clear();
+    normals.clear();
     for(int i=0; i<strandBox.size(); i++)
     {
         auto strand=strandBox[i];
@@ -222,6 +254,28 @@ void HairModel::update(Env &env, float dt)
             nodeIndexBox.append(j*2+1);
             texCoordBox.append(QVector2D(float(count)*0.1,0));
             texCoordBox.append(QVector2D(float(count)*0.1,1.0));
+
+            if(j>strand.nodeStart)
+            {
+                tangentBox.append(nodeBox[j -1].p1-pos);
+                tangentBox.append(nodeBox[j -1].p1-pos);
+
+//                tangentBox.append(pos-nodeBox[j -1].p1);
+//                tangentBox.append(pos-nodeBox[j -1].p1);
+            }
+            else
+            {
+                tangentBox.append(QVector3D(0,0,0));
+                tangentBox.append(QVector3D(0,0,0));
+            }
+
+
+            //法线
+            QVector3D n=QVector3D(pos.x(),0,pos.z());
+
+            normals.append(n);
+            normals.append(n);
+
             count++;
         }
         //图元重启标志点
@@ -261,10 +315,13 @@ void HairModel::updateBuf()
     indexBuf.allocate(getNodeIndexData(),countNodeIndex()*sizeof(GLuint));
 
     normalBuf.bind();
-    normalBuf.allocate(getDrawNodeData(),countNode()*sizeof(QVector3D));
+    normalBuf.allocate(getNormalsData(),countNormals()*sizeof(QVector3D));
 
     texBuf.bind();
     texBuf.allocate(getTexCoordData(),countTexCoord()*sizeof(QVector2D));
+
+    tangentBuf.bind();
+    tangentBuf.allocate(getTangentData(),countTangent()*sizeof(QVector3D));
 }
 
 QVector3D HairModel::calNodeForce(Env &env, int nodeIndex)
@@ -282,7 +339,7 @@ QVector3D HairModel::calNodeForce(Env &env, int nodeIndex)
     vec.setZ(wind.z());
 
     //随机误差
-   QVector3D randVec=rfBox[nodeIndex];
+    QVector3D randVec=rfBox[nodeIndex];
     vec+=randVec;
 
     float gravity=nodeBox[nodeIndex].mass*9.8;
