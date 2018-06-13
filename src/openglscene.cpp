@@ -85,6 +85,10 @@ void OpenGLScene::initializeGL()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+
+//    glSampleCoverage();
+
 
     initModel();
     initShaders();
@@ -92,6 +96,7 @@ void OpenGLScene::initializeGL()
 
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_CLAMP);
     //    glEnable(GL_CULL_FACE);
 }
 void OpenGLScene::initShaders()

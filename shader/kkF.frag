@@ -17,6 +17,37 @@ in vec3 vVaryingTangent;
 
 uniform sampler2D texture;
 uniform sampler2D hairTexture;
+uniform sampler2D noiseTexture;
+
+//主高光
+float getMainSpec()
+{
+    //切线角度随机偏移
+    vec4 tangentShift=texture2D(hairTexture,vVaryingTexCoords);
+    tangentShift.r=(tangentShift.r-0.5)/15;
+    vec3 vTangent=vVaryingTangent+tangentShift.r*vVaryingNormal;
+
+    //镜面光
+    vec3 vHalf= normalize(vVaryingLightDir+vVaryingView);
+    float spec = max(0.0,pow(1-pow(dot(normalize(vTangent),vHalf),2.0),1.0/2.0));
+
+    return pow(spec ,4096.0);
+}
+
+//噪点高光
+float getNoiseSpec()
+{
+    //切线角度随机偏移
+    vec4 tangentShift=texture2D(noiseTexture,vVaryingTexCoords);
+    tangentShift.r=(tangentShift.r-0.5)/10;
+    vec3 vTangent=vVaryingTangent-tangentShift.r*vVaryingNormal;
+
+    //镜面光
+    vec3 vHalf= normalize(vVaryingLightDir+vVaryingView);
+    float spec = max(0.0,pow(1-pow(dot(normalize(vTangent),vHalf),2.0),1.0/2.0));
+
+    return pow(spec ,2048.0);
+}
 
 void main()
 {
@@ -24,32 +55,20 @@ void main()
     vec4 tex=texture2D(texture,vVaryingTexCoords);
     gl_FragColor+=tex;
 
-    //切线角度随机偏移
-    vec4 tangentShift=texture2D(hairTexture,vVaryingTexCoords);
-    tangentShift.r=(tangentShift.r-0.5)/15;
-    vec3 vTangent=vVaryingTangent+tangentShift.r*vVaryingNormal;
-
-
-    //漫反射强度
+    //漫反射
     float diff=max(0.0,dot(normalize(vVaryingNormal),normalize(vVaryingLightDir)));
-
     gl_FragColor+=diff*diffuseColor;
 
     //环境光
     gl_FragColor+=ambientColor;
 
-//    //镜面光
-//    vec3 vReflection= normalize(reflect(-normalize(vVaryingLightDir),normalize(vVaryingNormal)));
-//    float spec = max(0.0,dot(normalize(vVaryingNormal),vReflection));
-
-//    //镜面光
-    vec3 vHalf= normalize(vVaryingLightDir+vVaryingView);
-    float spec = max(0.0,pow(1-pow(dot(normalize(vTangent),vHalf),2.0),1.0/2.0));
-
     if(diff!=0)
     {
-        float fSpec=pow(spec ,2048.0);
-        gl_FragColor.rgb+=vec3(fSpec,fSpec,fSpec);
+        float mSpec=getMainSpec();
+        float nSpec=getNoiseSpec();
+
+        gl_FragColor.rgb+=vec3(mSpec,mSpec,mSpec);
+        gl_FragColor.rgb+=vec3(nSpec,nSpec,nSpec);
         gl_FragColor.a=tex.a;
     }
 }

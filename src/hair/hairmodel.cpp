@@ -24,6 +24,14 @@ bool HairModel::init()
     hairTexture->setMagnificationFilter(QOpenGLTexture::Linear);
     hairTexture->setWrapMode(QOpenGLTexture::Repeat);
 
+
+    noiseTexture=new QOpenGLTexture(QOpenGLTexture::Target2D);
+    noiseTexture->setFormat(QOpenGLTexture::RGBA8U);
+    noiseTexture->setData(QImage("texture/noise.png").mirrored());
+    noiseTexture->setMinificationFilter(QOpenGLTexture::Nearest);
+    noiseTexture->setMagnificationFilter(QOpenGLTexture::Linear);
+    noiseTexture->setWrapMode(QOpenGLTexture::Repeat);
+
     mMatrix.setToIdentity();
     //生成头发节点
     for(int i=0; i<oriPoints.size(); i++)
@@ -143,6 +151,10 @@ void HairModel::draw(QOpenGLShaderProgram &shaderProgram)
     shaderProgram.setUniformValue("hairTexture",2);
     hairTexture->bind(2);
 
+
+    shaderProgram.setUniformValue("noiseTexture",3);
+    hairTexture->bind(3);
+
     normalBuf.bind();
 
     int normalLocation=shaderProgram.attributeLocation("vNormal");
@@ -176,6 +188,7 @@ void HairModel::draw(QOpenGLShaderProgram &shaderProgram)
 
     texture->release();
     hairTexture->release();
+    noiseTexture->release();
 
     glDisable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
 }
@@ -246,7 +259,7 @@ void HairModel::update(Env &env, float dt)
             QVector3D pos=hairNode.p1;
 
             drawNodeBox.append(pos);
-            pos.setZ(pos.z()+rz+0.1*(10.0-float(count))/10.0);
+            pos.setZ(pos.z()+rz+0.05*(10.0-float(count))/10.0);
             drawNodeBox.append(pos);
 
             //展开的三角形索引表

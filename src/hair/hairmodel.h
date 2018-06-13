@@ -87,6 +87,10 @@ protected:
     //头发光偏向纹理
     QOpenGLTexture* hairTexture{nullptr};
     QOpenGLBuffer hairTexBuf{QOpenGLBuffer::VertexBuffer};
+
+    //噪点高光偏向纹理
+    QOpenGLTexture* noiseTexture{nullptr};
+    QOpenGLBuffer noiseTexBuf{QOpenGLBuffer::VertexBuffer};
 };
 
 #endif // HAIRMODEL_H
