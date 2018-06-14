@@ -72,7 +72,7 @@ void OpenGLScene::initializeGL()
 {
     initializeOpenGLFunctions();
 
-    glClearColor(255,255,255,255);
+    glClearColor(100,100,100,255);
 
     glEnable(GL_POLYGON_OFFSET_FILL);
     glEnable(GL_POLYGON_OFFSET_LINE);

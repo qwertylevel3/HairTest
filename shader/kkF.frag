@@ -24,14 +24,16 @@ float getMainSpec()
 {
     //切线角度随机偏移
     vec4 tangentShift=texture2D(hairTexture,vVaryingTexCoords);
-    tangentShift.r=(tangentShift.r-0.5)/15;
+    tangentShift.r=(tangentShift.r-0.5)/50;
     vec3 vTangent=vVaryingTangent+tangentShift.r*vVaryingNormal;
 
     //镜面光
     vec3 vHalf= normalize(vVaryingLightDir+vVaryingView);
-    float spec = max(0.0,pow(1-pow(dot(normalize(vTangent),vHalf),2.0),1.0/2.0));
+    float dotTH=dot(normalize(vTangent),vHalf);
+    float sinTH=sqrt(1-dotTH*dotTH);
+    float spec = max(0.0,sinTH);
 
-    return pow(spec ,4096.0);
+    return pow(spec ,2048.0);
 }
 
 //噪点高光
@@ -39,13 +41,14 @@ float getNoiseSpec()
 {
     //切线角度随机偏移
     vec4 tangentShift=texture2D(noiseTexture,vVaryingTexCoords);
-    tangentShift.r=(tangentShift.r-0.5)/10;
+    tangentShift.r=(tangentShift.r-0.5)/5;
     vec3 vTangent=vVaryingTangent-tangentShift.r*vVaryingNormal;
 
     //镜面光
     vec3 vHalf= normalize(vVaryingLightDir+vVaryingView);
-    float spec = max(0.0,pow(1-pow(dot(normalize(vTangent),vHalf),2.0),1.0/2.0));
-
+    float dotTH=dot(normalize(vTangent),vHalf);
+    float sinTH=sqrt(1-dotTH*dotTH);
+    float spec = max(0.0,sinTH);
     return pow(spec ,2048.0);
 }
 
@@ -67,8 +70,14 @@ void main()
         float mSpec=getMainSpec();
         float nSpec=getNoiseSpec();
 
-        gl_FragColor.rgb+=vec3(mSpec,mSpec,mSpec);
-        gl_FragColor.rgb+=vec3(nSpec,nSpec,nSpec);
+        vec4 vSpec=specularColor*mSpec;
+
+        vSpec+=specularColor*nSpec;
+
+
+        gl_FragColor.rgb+=vSpec.rgb;
+//        gl_FragColor.rgb+=vec3(nSpec,nSpec,nSpec);
+//        gl_FragColor.rgb-=vec3(0.5,0.5,0.5);
         gl_FragColor.a=tex.a;
     }
 }

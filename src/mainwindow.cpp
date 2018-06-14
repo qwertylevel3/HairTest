@@ -16,11 +16,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->setCentralWidget(scene);
 
-    //init
-    changeAmbiendColor();
-    changeDiffuseColor();
-    changeSpecularColor();
-    changeLightPos();
 
     connect(ui->ambientRSlider,SIGNAL(valueChanged(int)),this,SLOT(changeAmbiendColor()));
     connect(ui->ambientGSlider,SIGNAL(valueChanged(int)),this,SLOT(changeAmbiendColor()));
@@ -45,6 +40,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->windYSlider,SIGNAL(valueChanged(int)),this,SLOT(changeWind()));
     connect(ui->windZSlider,SIGNAL(valueChanged(int)),this,SLOT(changeWind()));
 
+
+    //init
+    changeAmbiendColor();
+    changeDiffuseColor();
+    changeSpecularColor();
+    changeLightPos();
+    changeWind();
 }
 
 MainWindow::~MainWindow()
