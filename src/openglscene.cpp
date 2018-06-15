@@ -86,6 +86,9 @@ void OpenGLScene::initializeGL()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+    glEnable(GL_SAMPLE_MASK);
+    glSampleCoverage(0,0x0E);
+//    glSampleMaski(0, 0x0E);
 
 //    glSampleCoverage();
 
@@ -429,6 +432,14 @@ void OpenGLScene::initSphereModel()
     sphere2->init();
     env.sphereBox.append(sphere2);
     modelBox.append(sphere2);
+
+    //碰撞球
+    Sphere* sphere3=new Sphere();
+    sphere3->setTexture("texture/rect.png");
+    sphere3->load(QString("model/sphere3.obj"));
+    sphere3->init();
+    env.sphereBox.append(sphere3);
+    modelBox.append(sphere3);
 }
 
 void OpenGLScene::initHeadModel()

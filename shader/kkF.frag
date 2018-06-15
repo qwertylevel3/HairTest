@@ -40,8 +40,8 @@ float getMainSpec()
 float getNoiseSpec()
 {
     //切线角度随机偏移
-    vec4 tangentShift=texture2D(noiseTexture,vVaryingTexCoords);
-    tangentShift.r=(tangentShift.r-0.5)/5;
+    vec4 tangentShift=texture2D(hairTexture,vVaryingTexCoords);
+    tangentShift.r=(tangentShift.r-0.5)/2;
     vec3 vTangent=vVaryingTangent-tangentShift.r*vVaryingNormal;
 
     //镜面光
@@ -49,7 +49,7 @@ float getNoiseSpec()
     float dotTH=dot(normalize(vTangent),vHalf);
     float sinTH=sqrt(1-dotTH*dotTH);
     float spec = max(0.0,sinTH);
-    return pow(spec ,2048.0);
+    return pow(spec ,1024.0);
 }
 
 void main()

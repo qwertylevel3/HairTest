@@ -54,12 +54,12 @@ bool HairModel::init()
             }
             else
             {
-                node.length=0.2;
-                tempPos.setY(tempPos.y()+0.2);
+                node.length=0.12;
+                tempPos.setY(tempPos.y()+0.12);
             }
 
             //单个节点质量
-            node.mass=nodeCount+1;
+            node.mass=nodeCount+2;
 
             node.p0=tempPos;
             node.p1=tempPos;
@@ -180,11 +180,8 @@ void HairModel::draw(QOpenGLShaderProgram &shaderProgram)
     shaderProgram.enableAttributeArray(tangentLocation);
     shaderProgram.setAttributeBuffer(tangentLocation, GL_FLOAT, offset, 3, sizeof(QVector3D));
 
-
-
 //    glDrawElements(GL_LINE_STRIP, countNodeIndex(), GL_UNSIGNED_INT, 0);
     glDrawElements(GL_TRIANGLE_STRIP, countNodeIndex(), GL_UNSIGNED_INT, 0);
-
 
     texture->release();
     hairTexture->release();
